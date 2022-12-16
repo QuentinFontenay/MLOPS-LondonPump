@@ -2,13 +2,15 @@ from datetime import datetime, timedelta
 from bson import ObjectId
 from fastapi import Body, Depends, HTTPException, APIRouter, Response, status
 from .constants import RESPONSES
-from .schemas import CreateUserSchema, UserResponse, LoginUserSchema
+from .schemas import CreateUserSchema, UserResponse
 from fastapi.responses import JSONResponse
 from utils.mongodb import User
 from utils.bcrypt import hash_password, verify_password
 from .serializers import userResponseEntity, userEntity
 from utils.config import settings
 from utils.oauth2 import AuthJWT, require_user
+from fastapi.security import OAuth2PasswordRequestForm
+from .service import create_access_token
 
 router = APIRouter()
 
@@ -16,7 +18,7 @@ ACCESS_TOKEN_EXPIRES_IN = settings.ACCESS_TOKEN_EXPIRES_IN
 REFRESH_TOKEN_EXPIRES_IN = settings.REFRESH_TOKEN_EXPIRES_IN
 
 @router.post('/login', name="Connexion à l'API", tags=['authentification'], responses=RESPONSES)
-def login(payload: LoginUserSchema, response: Response, Authorize: AuthJWT = Depends()):
+def login(payload: OAuth2PasswordRequestForm = Depends()):
     """Authentification à l'api vous permettant de pouvoir utiliser les différentes routes
     """
     user = userEntity(User.find_one({ 'username': payload.username }))
@@ -27,21 +29,11 @@ def login(payload: LoginUserSchema, response: Response, Authorize: AuthJWT = Dep
     if not verify_password(payload.password, user['password']):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail='Incorrect Email or Password')
-    # Create access token
-    access_token = Authorize.create_access_token(
-        subject=str(user["id"]), expires_time=timedelta(minutes=ACCESS_TOKEN_EXPIRES_IN))
 
-    # Create refresh token
-    refresh_token = Authorize.create_refresh_token(
-        subject=str(user["id"]), expires_time=timedelta(minutes=REFRESH_TOKEN_EXPIRES_IN))
-    
-    # Store refresh and access tokens in cookie
-    response.set_cookie('access_token', access_token, ACCESS_TOKEN_EXPIRES_IN * 60,
-                        ACCESS_TOKEN_EXPIRES_IN * 60, '/', None, False, True, 'lax')
-    response.set_cookie('refresh_token', refresh_token,
-                        REFRESH_TOKEN_EXPIRES_IN * 60, REFRESH_TOKEN_EXPIRES_IN * 60, '/', None, False, True, 'lax')
-    response.set_cookie('logged_in', 'True', ACCESS_TOKEN_EXPIRES_IN * 60,
-                        ACCESS_TOKEN_EXPIRES_IN * 60, '/', None, False, False, 'lax')
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRES_IN)
+    access_token = create_access_token(
+        data={"sub": user["id"]}, expires_delta=access_token_expires
+    )
     
     return JSONResponse(status_code=status.HTTP_200_OK, content={'status': 'success', 'access_token': access_token})
 

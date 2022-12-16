@@ -1,20 +1,15 @@
-import json
-from fastapi import Depends, HTTPException, status
-from .constants import OAUTH2_SCHEMA
+from datetime import timedelta, datetime
+from typing import Union
+from jose import JWTError, jwt
+from utils.config import settings
 
-def fake_decode_token(token):
-    identifiants = open('./public/identifiants.json')
-    data = json.load(identifiants)
-    limited_list = [element for element in data if element['username'] == token]
+def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
 
-    return limited_list
-
-async def get_current_user(token: str = Depends(OAUTH2_SCHEMA)):
-    user = fake_decode_token(token)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid authentication credentials",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    return user[0]
+    return encoded_jwt

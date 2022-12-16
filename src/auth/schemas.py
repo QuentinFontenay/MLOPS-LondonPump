@@ -24,10 +24,6 @@ class CreateUserSchema(UserModelSchema):
     password: constr(min_length=6) = Field(...)
     passwordConfirm: str = Field(...)
 
-class LoginUserSchema(BaseModel):
-    username: str = Field(...)
-    password: constr(min_length=6) = Field(...)
-
 class UserResponseSchema(UserModelSchema):
     id: str
     pass
