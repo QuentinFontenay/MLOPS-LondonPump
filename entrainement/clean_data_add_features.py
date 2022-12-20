@@ -803,7 +803,7 @@ def add_traffic(data, traffic_file):
     return data
 
 
-# ETL pipeline
+# clean data and add features pipeline
 inc, mob, station_pos, meteo, holidays, traffic = extract()
 
 inc = convert_gps(data= inc)
@@ -836,4 +836,5 @@ df = add_weather(df, weather_file)
 df = add_holidays(df, school_holidays_file)
 df = add_traffic(df, traffic_file)
 
+# save df to pkl
 df.to_pickle("data/base_ml.pkl")
