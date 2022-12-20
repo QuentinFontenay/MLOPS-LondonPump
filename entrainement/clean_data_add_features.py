@@ -8,12 +8,12 @@ from time import time
 
 
 # original files
-incidents_file = 'data/LFB Incident data Last 3 years'
-mobilisations_file = 'data/LFB Mobilisation data Last 3 years'
-stations_file = 'data/pos station.csv'                                # only once (no change except if new stations built)
-school_holidays_file = 'data/holidays.csv'                            # to be updated when new calendar available
-weather_file = 'data/Weather London.csv'                              # to be updated (get past month data, once a month ?)
-traffic_file = 'data/london_congestion.csv'                           # to be updated each year
+incidents_file = '../data/LFB Incident data Last 3 years'
+mobilisations_file = '../data/LFB Mobilisation data Last 3 years'
+stations_file = '../data/pos station.csv'                                # only once (no change except if new stations built)
+school_holidays_file = '../data/holidays.csv'                            # to be updated when new calendar available
+weather_file = '../data/Weather London.csv'                              # to be updated (get past month data, once a month ?)
+traffic_file = '../data/london_congestion.csv'                           # to be updated each year
 
 
 def extract():
@@ -837,4 +837,4 @@ df = add_holidays(df, school_holidays_file)
 df = add_traffic(df, traffic_file)
 
 # save df to pkl
-df.to_pickle("data/base_ml.pkl")
+df.to_pickle("../data/base_ml.pkl")
