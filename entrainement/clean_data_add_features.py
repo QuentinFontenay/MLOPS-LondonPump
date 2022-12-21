@@ -108,6 +108,9 @@ def remove_variables(data):
 
     data = data.drop(remove_col, axis = 1)
 
+    if "NumCalls" in data.columns:
+        data = data.drop("NumCalls", axis = 1)
+
     return data
 
 
