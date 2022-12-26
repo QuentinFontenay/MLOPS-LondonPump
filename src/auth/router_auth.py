@@ -14,21 +14,16 @@ from .service import create_access_token
 
 router = APIRouter()
 
-ACCESS_TOKEN_EXPIRES_IN = settings.ACCESS_TOKEN_EXPIRES_IN
-REFRESH_TOKEN_EXPIRES_IN = settings.REFRESH_TOKEN_EXPIRES_IN
-
 @router.post('/login', name="Connexion à l'API", tags=['authentification'], responses=RESPONSES)
 def login(payload: OAuth2PasswordRequestForm = Depends()):
     """Authentification à l'api vous permettant de pouvoir utiliser les différentes routes
     """
-    user = userEntity(User.find_one({ 'username': payload.username }))
+    user = User.find_one({ 'username': payload.username })
     if not user:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail='Incorrect Email or Password')
-
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Incorrect Email or Password')
+    user = userEntity(user)
     if not verify_password(payload.password, user['password']):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail='Incorrect Email or Password')
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Incorrect Email or Password')
 
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRES_IN)
     access_token, time_expire = create_access_token(
