@@ -1,12 +1,9 @@
 from pydantic import BaseModel, Field, constr
-from bson import ObjectId
-# from utils.mongodb import PyObjectId
 from datetime import datetime
 
 class UserModelSchema(BaseModel):
-    # id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     username: str = Field(...)
-    created_at: datetime = Field(...)
+    created_at: datetime = Field(default=str(datetime.now()))
 
     class Config:
         orm_mode = True

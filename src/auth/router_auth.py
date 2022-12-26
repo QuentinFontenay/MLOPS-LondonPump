@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from bson import ObjectId
-from fastapi import Body, Depends, HTTPException, APIRouter, Response, status
+from fastapi import Depends, HTTPException, APIRouter, status
 from .constants import RESPONSES
 from .schemas import CreateUserSchema, UserResponse
 from fastapi.responses import JSONResponse
@@ -8,7 +8,7 @@ from utils.mongodb import User
 from utils.bcrypt import hash_password, verify_password
 from .serializers import userResponseEntity, userEntity
 from utils.config import settings
-from utils.oauth2 import AuthJWT, require_user
+from utils.oauth2 import require_user
 from fastapi.security import OAuth2PasswordRequestForm
 from .service import create_access_token
 
@@ -31,14 +31,25 @@ def login(payload: OAuth2PasswordRequestForm = Depends()):
                             detail='Incorrect Email or Password')
 
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRES_IN)
-    access_token = create_access_token(
+    access_token, time_expire = create_access_token(
         data={"sub": user["id"]}, expires_delta=access_token_expires
     )
     
-    return JSONResponse(status_code=status.HTTP_200_OK, content={'status': 'success', 'access_token': access_token})
+    return JSONResponse(status_code=status.HTTP_200_OK, content={'access_token': access_token, 'token_expiry': time_expire})
+
+@router.post('/refresh', name="Refresh access token", tags=['authentification'], responses=RESPONSES)
+def refresh_token(user_id: str = Depends(require_user)):
+    """Refresh du token d'accès
+    """
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRES_IN)
+    access_token, time_expire = create_access_token(
+        data={"sub": user_id}, expires_delta=access_token_expires
+    )
+    
+    return JSONResponse(status_code=status.HTTP_200_OK, content={'access_token': access_token, 'token_expiry': time_expire})
 
 @router.post("/register", response_description="Add new user", response_model=UserResponse, tags=['authentification'])
-async def create_user(payload: CreateUserSchema):
+async def create_user(payload: CreateUserSchema = Depends()):
     user = User.find_one({'username': payload.username})
     if user:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT,
