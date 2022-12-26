@@ -5,6 +5,7 @@ pandas
 pymongo
 numpy
 sklearn
+joblib
 mongoengine
 passlib[bcrypt]
 fastapi-jwt-auth[asymmetric]
