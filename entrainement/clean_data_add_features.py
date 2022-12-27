@@ -3,11 +3,11 @@ import numpy as np
 from xlsx2csv import Xlsx2csv                   # to convert xlsx to csv
 from convertbng.cutil import convert_lonlat     # to convert gps data
 from workalendar.europe.united_kingdom import UnitedKingdom
-from datetime import date # utile pour jours travaillés
+from datetime import date
 from time import time
 
 
-# original files
+# original files => see later how (database / scrap)
 incidents_file = '../data/LFB Incident data Last 3 years'
 mobilisations_file = '../data/LFB Mobilisation data Last 3 years'
 stations_file = '../data/pos station.csv'                                # only once (no change except if new stations built)
@@ -246,7 +246,7 @@ def missing_deployed_from_location(data):
         else:
             data['DeployedFromLocation'][i] = "Other Station"
 
-        return data
+    return data
 
 
 def missing_special_service(data):
@@ -653,7 +653,7 @@ def pumps_available(data):
 
 def rows_delete(data, lines=300):
     '''
-    remove incidents from the firt (300 by default) lines
+    remove incidents from the first (300 by default) lines
     '''
     
     inc_suppr = data[:lines]['IncidentNumber'].unique().tolist()
