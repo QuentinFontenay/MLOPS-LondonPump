@@ -71,45 +71,46 @@ def merge_datasets(incidents, mobilisations):
 
 def remove_variables(data):
     '''
-    Remove useless variables
+    Keep only useful variables
     '''
 
-    remove_col = [
-        'ResourceMobilisationId',
-        'PerformanceReporting',
-        'DateAndTimeReturned',
-        'PlusCode_Code',
-        'PlusCode_Description',
-        'DelayCodeId',
-        'Postcode_full',
-        'Postcode_district',
-        'UPRN',
-        'USRN',
-        'IncGeo_BoroughCode',
-        'IncGeo_BoroughName',
-        'ProperCase',
-        'IncGeo_WardCode',
-        'IncGeo_WardName',
-        'IncGeo_WardNameNew',
-        'Easting_m',
-        'Northing_m',
-        'Easting_rounded',
-        'Northing_rounded',
-        'Latitude',
-        'Longitude',
-        'FRS',
-        'FirstPumpArriving_AttendanceTime',
-        'FirstPumpArriving_DeployedFromStation',
-        'SecondPumpArriving_AttendanceTime',
-        'SecondPumpArriving_DeployedFromStation',
-        'PumpHoursRoundUp',
-        'Notional Cost (£)',
+    keep_columns = [
+        'IncidentNumber',
+        'CalYear_x',
+        'HourOfCall_x',
+        'Resource_Code',
+        'DateAndTimeMobilised',
+        'DateAndTimeMobile',
+        'DateAndTimeArrived',
+        'TurnoutTimeSeconds',
+        'TravelTimeSeconds',
+        'AttendanceTimeSeconds',
+        'DateAndTimeLeft',
+        'DeployedFromStation_Code',
+        'DeployedFromStation_Name',
+        'DeployedFromLocation',
+        'PumpOrder',
+        'DelayCode_Description',
+        'Appliance',
+        'DateOfCall',
+        'CalYear_y',
+        'TimeOfCall',
+        'HourOfCall_y',
+        'IncidentGroup',
+        'StopCodeDescription',
+        'SpecialServiceType',
+        'PropertyCategory',
+        'PropertyType',
+        'AddressQualifier',
+        'IncidentStationGround',
+        'NumStationsWithPumpsAttending',
+        'NumPumpsAttending',
+        'PumpCount',
+        'Lat',
+        'Lon'
     ]
 
-    data = data.drop(remove_col, axis = 1)
-
-    if "NumCalls" in data.columns:
-        data = data.drop("NumCalls", axis = 1)
+    data = data[keep_columns]
 
     return data
 
