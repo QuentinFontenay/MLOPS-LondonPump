@@ -3,6 +3,10 @@ fastapi
 python-multipart
 pandas
 pymongo
-pickle
 numpy
 sklearn
+joblib
+mongoengine
+passlib[bcrypt]
+fastapi-jwt-auth[asymmetric]
+python-jose[cryptography]

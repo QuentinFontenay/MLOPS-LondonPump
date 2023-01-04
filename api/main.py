@@ -9,11 +9,11 @@ api = FastAPI(
     openapi_tags=[
     {
         'name': 'authentification',
-        'description': "Vous retrouverez dans cette partie les différentes routes liés à l'authentification"
+        'description': "Vous retrouverez dans cette partie les différentes routes liées à l'authentification"
     },
     {
         'name': 'prédiction',
-        'description': 'Vous retrouverez dans cette partie les différentes routes liés aux prédiction de notre modèle'
+        'description': 'Vous retrouverez dans cette partie les différentes routes liées aux prédiction de notre modèle'
     }
 ]
 )
