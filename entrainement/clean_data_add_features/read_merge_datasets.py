@@ -1,7 +1,10 @@
 import pandas as pd
 
-# initial data location
-data_loc = "../../data/"
+# initial data location (if main clean file in /entrainement/clean_data_add_features/)
+# data_loc = "../../data/"
+
+# initial data location (if main clean file in /entrainement/)
+data_loc = "../data/"
 
 # original files => see later how (database / scrap)
 incidents_file = data_loc + 'LFB Incident data Last 3 years'
