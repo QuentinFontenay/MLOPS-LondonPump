@@ -1,26 +1,29 @@
 from datetime import datetime
+from typing import Union
+from fastapi import Query
 from pydantic import BaseModel, Field
 
 class CreatePredictionSchema(BaseModel):
-    deployedFromLocation: str
-    appliance: str
-    propertyCategory: str
-    addressQualifier: str
-    incidentType: str
-    distance: str
-    totalOfPumpInLondon_Out: str
-    station_Code_of_ressource: str
-    incidentStationGround_Code: str
-    pumpAvailable: str
-    month: int
-    temp: float
-    precip: float
-    cloudcover: float
-    visibility: str
-    workingday: int
-    school_holidays: int
-    congestion_rate: float
+    DeployedFromLocation: str = Field(default="Home Station")
+    Appliance: str = Field(default="Pump Ladder")
+    PropertyCategory: str = Field(default="Other Residential")
+    AddressQualifier: str = Field(default="Correct incident location")
+    IncidentType: str = Field(default="Fire")
+    Distance: float = Field(default=0.608)
+    TotalOfPumpInLondon_Out: int = Field(default=3)
+    Station_Code_of_ressource: str = Field(default="G30")
+    IncidentStationGround_Code: str = Field(default="G30")
+    PumpAvailable: str = Field(default="2")
+    month: int = Field(default=1)
+    temp: float = Field(default=2.6)
+    precip: float = Field(default=0.0)
+    cloudcover: float = Field(default=0.0)
+    visibility: float = Field(default=28.3)
+    conditions: str = Field(default="Clear")
+    workingday: int = Field(default=1)
+    school_holidays: int = Field(default=0)
+    congestion_rate: float = Field(default=0.04)
 
 class HistorisationSchema(BaseModel):
-    created_at: datetime = Field(default=str(datetime.now())),
-    prediction: int = Field(...),
+    created_at: Union[datetime, None] = Query(default=None)
+    username: Union[str, None] = Query(default=None, max_length=50)

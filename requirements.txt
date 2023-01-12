@@ -5,6 +5,7 @@ pandas
 pymongo
 numpy
 sklearn
+scikit-learn
 joblib
 mongoengine
 passlib[bcrypt]

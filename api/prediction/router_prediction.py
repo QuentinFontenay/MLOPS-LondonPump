@@ -1,16 +1,39 @@
-from fastapi import Depends, APIRouter, status
+from fastapi import Depends, APIRouter, HTTPException, status
 from utils.oauth2 import require_user
-from .schemas import CreatePredictionSchema
+from .schemas import CreatePredictionSchema, HistorisationSchema
 from fastapi.responses import JSONResponse
 from .service import predict_time_pumps
+from utils.mongodb import Predictions, User
+from datetime import datetime
+from bson import ObjectId
+from auth.serializers import userResponseEntity
+from .serializers import predictionResponseEntity
 
 router = APIRouter()
 
-@router.post('/predict/time_pump', name="Prédiction du temps d'intervention", tags=['prediction'])
+@router.post('/predict/time_pump', name="Prédiction du temps d'intervention", tags=['prédiction'])
 def prediction(payload: CreatePredictionSchema = Depends(), user_id: str = Depends(require_user)):
     """Prédiction du temps d'intervention des pompiers sur un incendie dans la ville de Londres
     """
-    print(payload.dict())
     time = predict_time_pumps(payload.dict())
+    prediction = {"prediction": time, "userId": ObjectId(user_id), "created_at": datetime.utcnow()}
+    Predictions.insert_one(prediction)
+    time_pump = str(time) + " secondes"
+
+    return JSONResponse(status_code=status.HTTP_200_OK, content={"time_pump": time_pump})
+
+@router.get('/historique', name="Récupérer l'historique des prédictions", tags=['prédiction'])
+def prediction(payload: HistorisationSchema = Depends(), user_id: str = Depends(require_user)):
+    """Récupérer l'historique des prédictions réalisées par les utilisateurs
+    """
+    if payload.username is not None:
+        predictions = predictionResponseEntity(Predictions.find({ 'username': payload.username }))
+    elif payload.created_at is not None:
+        predictions = predictionResponseEntity(Predictions.find({ 'created_at': payload.created_at }))
+    else:
+        predictions = predictionResponseEntity(Predictions.find())
+
+    if predictions is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='No predictions found')
     
-    return JSONResponse(status_code=status.HTTP_200_OK)
+    return JSONResponse(status_code=status.HTTP_200_OK, content=predictions)
