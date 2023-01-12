@@ -9,7 +9,7 @@ def predictionEntity(user) -> dict:
 def predictionResponseEntity(user) -> dict:
     return {
         "id": str(user["_id"]),
-        "username": user["username"],
+        "userId": str(user["userId"]),
         "prediction": user["prediction"],
         "created_at": str(user["created_at"]),
     }
