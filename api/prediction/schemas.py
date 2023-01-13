@@ -27,3 +27,4 @@ class CreatePredictionSchema(BaseModel):
 class HistorisationSchema(BaseModel):
     created_at: Union[datetime, None] = Query(default=None)
     username: Union[str, None] = Query(default=None, max_length=50)
+    risk: Union[bool, None] = Query(default=None)

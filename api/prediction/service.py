@@ -38,9 +38,9 @@ def predict_time_pumps(params):
     # Voir si la caserne de provenance est dans la liste de celles qui ont un temps habituellement plus élevé que le modèle
     stations = list(Stations.find({}, { "code": 1, "_id": 0 }))
     if any(obj['code'] == data['Station_Code_of_ressource'][0] for obj in stations) == True:
-        risk_underestimated = 'oui'
+        risk_underestimated = True
     else :
-        risk_underestimated = 'non'
+        risk_underestimated = False
 
     # calcul de la prédiction
     predict_time = model.predict(data_ml)

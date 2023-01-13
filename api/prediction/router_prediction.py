@@ -26,13 +26,20 @@ def prediction(payload: CreatePredictionSchema = Depends(), user_id: str = Depen
 def prediction(payload: HistorisationSchema = Depends(), user_id: str = Depends(require_user)):
     """Récupérer l'historique des prédictions réalisées par les utilisateurs
     """
+    query = {}
     if payload.username is not None:
-        user = userResponseEntity(User.find_one({ 'username': payload.username }))
-        predictions = list(Predictions.find({ 'userId': ObjectId(str(user['id'])) }))
-    elif payload.created_at is not None:
-        predictions = list(Predictions.find({ 'created_at': payload.created_at }))
-    else:
-        predictions = list(Predictions.find())
+        user = User.find_one({ 'username': payload.username })
+        if user is not None:
+            user = userResponseEntity(user)
+            query.update({ 'userId': ObjectId(str(user['id'])) })
+        else:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='No user found')
+    if payload.created_at is not None:
+        query.update({ 'created_at': payload.created_at })
+    if payload.risk is not None:
+        query.update({ 'risk_underestimated': payload.risk })
+
+    predictions = list(Predictions.find(query))
     prediction_array = []
     for prediction in predictions:
         prediction_array.append(predictionResponseEntity(prediction))
