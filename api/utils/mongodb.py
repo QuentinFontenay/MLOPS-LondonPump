@@ -16,4 +16,5 @@ db = client[settings.MONGO_INITDB_DATABASE]
 User = db.users
 Predictions = db.predictions
 Stations = db.stations
+
 User.create_index([("username", pymongo.ASCENDING)], unique=True)
