@@ -52,14 +52,11 @@ holidays_periods = []
 for i in driver.find_elements(By.CLASS_NAME, 'odd'):
     holiday = r.findall(i.text)
     if len(holiday) == 2:
-        # print(holiday)
         holidays_periods.append(holiday)
-    
 
 for i in driver.find_elements(By.CLASS_NAME, 'even'):
     holiday = r.findall(i.text)
     if len(holiday) == 2:
-        # print(holiday)
         holidays_periods.append(holiday)
 driver.close()
 # Créer un df des plages de vacances scolaires
