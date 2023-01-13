@@ -1,6 +1,7 @@
 from joblib import load
 import pandas as pd
 import os
+from utils.mongodb import Stations
 
 def load_file():
     script_dir = os.path.dirname(__file__)
@@ -34,12 +35,13 @@ def predict_time_pumps(params):
     # Remplacer les valeurs manquantes par 0 (ce sont les variables qui doivent être à zéro suite à dichotomisation)
     data_ml = data_ml.fillna(0)
 
-    # Voir si la caserne de provenance est dans la liste de celles qui ont un temps habituellement plus élevé que le modèle 
-    # if data['Station_Code_of_ressource'][0] in topslowest_code:
-    #     risk_underestimated = 'oui'
-    # else :
-    #     risk_underestimated = 'non'
+    # Voir si la caserne de provenance est dans la liste de celles qui ont un temps habituellement plus élevé que le modèle
+    stations = list(Stations.find({}, { "code": 1, "_id": 0 }))
+    if any(obj['code'] == data['Station_Code_of_ressource'][0] for obj in stations) == True:
+        risk_underestimated = 'oui'
+    else :
+        risk_underestimated = 'non'
 
     # calcul de la prédiction
     predict_time = model.predict(data_ml)
-    return int(predict_time)
+    return int(predict_time), risk_underestimated
