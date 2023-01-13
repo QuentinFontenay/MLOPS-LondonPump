@@ -16,6 +16,8 @@ def prediction(payload: CreatePredictionSchema = Depends(), user_id: str = Depen
     """Prédiction du temps d'intervention des pompiers sur un incendie dans la ville de Londres
     """
     time, risk_underestimated = predict_time_pumps(payload.dict())
+    if time is None:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail='Error while predicting time pump')
     prediction = {"prediction": time, "risk_underestimated": risk_underestimated, "userId": ObjectId(user_id), "created_at": datetime.utcnow()}
     Predictions.insert_one(prediction)
     time_pump = str(time) + " secondes"
