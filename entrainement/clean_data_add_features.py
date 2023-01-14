@@ -17,7 +17,7 @@ def cleaned_data():
 
     returns cleaned data with new variables
     '''
-    inc, mob, station_pos, weather, holidays, traffic = extract()
+    inc, mob, station_pos, weather, holidays, traffic = extract(path_to_data= "../data")
     inc = convert_gps(data= inc)
     mob = create_appliance(data= mob)
     lfb = merge_datasets(incidents= inc, mobilisations= mob)
