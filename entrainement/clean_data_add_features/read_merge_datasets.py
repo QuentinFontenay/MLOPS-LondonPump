@@ -5,7 +5,7 @@ import os
 # data_loc = "../../data/"
 
 # initial data location (if main clean file in /entrainement/)
-data_loc = "../data/"
+# data_loc = "../data/"
 
 # original files => see later how (database / scrap)
 incidents_file = 'LFB Incident data Last 3 years'
@@ -16,7 +16,7 @@ weather_file = 'Weather London.csv'                              # to be updated
 traffic_file = 'london_congestion.csv'
 
 
-def extract(path_to_data = data_loc):
+def extract(path_to_data= "../data"):
     '''
     read data from original data folder (../data by default)
     '''
@@ -26,14 +26,14 @@ def extract(path_to_data = data_loc):
     # Xlsx2csv(mobilisations_file+'.xlsx').convert((mobilisations_file+'.csv'))
     
     # create dataframes from csv
-    inc = pd.read_csv(os.path.join(data_loc, incidents_file+'.csv'))
-    mob = pd.read_csv(os.path.join(data_loc, mobilisations_file+'.csv'))
+    inc = pd.read_csv(os.path.join(path_to_data, incidents_file+'.csv'))
+    mob = pd.read_csv(os.path.join(path_to_data, mobilisations_file+'.csv'))
 
     # create dataframes for other files
-    station_pos=pd.read_csv(os.path.join(data_loc, stations_file))
-    meteo = pd.read_csv(os.path.join(data_loc, weather_file))
-    holidays=pd.read_csv(os.path.join(data_loc, school_holidays_file), sep=';')
-    traffic = pd.read_csv(os.path.join(data_loc, traffic_file), sep=';')
+    station_pos=pd.read_csv(os.path.join(path_to_data, stations_file))
+    meteo = pd.read_csv(os.path.join(path_to_data, weather_file))
+    holidays=pd.read_csv(os.path.join(path_to_data, school_holidays_file), sep=';')
+    traffic = pd.read_csv(os.path.join(path_to_data, traffic_file), sep=';')
 
     return inc, mob, station_pos, meteo, holidays, traffic
 
