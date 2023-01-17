@@ -9,6 +9,6 @@ def userEntity(user) -> dict:
 def userResponseEntity(user) -> dict:
     return {
         "id": str(user["_id"]),
-        "username": user["username"],
+        "username": str(user["username"]),
         "created_at": str(user["created_at"]),
     }
