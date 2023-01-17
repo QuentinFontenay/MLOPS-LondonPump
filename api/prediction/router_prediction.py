@@ -25,7 +25,7 @@ def prediction(payload: CreatePredictionSchema = Depends(), user_id: str = Depen
     return JSONResponse(status_code=status.HTTP_200_OK, content={"time_pump": time_pump, "risk_underestimated": risk_underestimated})
 
 @router.get('/historique', name="Récupérer l'historique des prédictions", tags=['prédiction'])
-def prediction(payload: HistorisationSchema = Depends(), user_id: str = Depends(require_user)):
+def prediction_historique(payload: HistorisationSchema = Depends(), user_id: str = Depends(require_user)):
     """Récupérer l'historique des prédictions réalisées par les utilisateurs
     """
     query = {}

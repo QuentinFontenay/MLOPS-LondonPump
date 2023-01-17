@@ -45,6 +45,8 @@ def refresh_token(user_id: str = Depends(require_user)):
 
 @router.post("/register", response_description="Add new user", response_model=UserResponse, tags=['authentification'])
 async def create_user(payload: CreateUserSchema = Depends()):
+    """Création d'un compte utilisateur
+    """
     user = User.find_one({'username': payload.username})
     if user:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT,
@@ -64,5 +66,7 @@ async def create_user(payload: CreateUserSchema = Depends()):
 
 @router.get('/me', response_model=UserResponse)
 def get_me(user_id: str = Depends(require_user)):
+    """Récupération des informations de l'utilisateur connecté
+    """
     user = userResponseEntity(User.find_one({'_id': ObjectId(str(user_id))}))
     return {"status": "success", "user": user}

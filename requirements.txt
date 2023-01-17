@@ -5,9 +5,11 @@ pandas
 pymongo
 numpy
 selenium
+pytest
+httpx
 scikit-learn
 joblib
+mongomock
 mongoengine
 passlib[bcrypt]
-fastapi-jwt-auth[asymmetric]
 python-jose[cryptography]
