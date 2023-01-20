@@ -1,0 +1,59 @@
+services:
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/mongodb:/data/db
+    networks:
+      - stack
+
+  api:
+    image: api:latest
+    build:
+      context: .
+      dockerfile: ./api/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - ACCESS_TOKEN_EXPIRES_IN=${ACCESS_TOKEN_EXPIRES_IN}
+      - REFRESH_TOKEN_EXPIRES_IN=${REFRESH_TOKEN_EXPIRES_IN}
+      - JWT_ALGORITHM=${JWT_ALGORITHM}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - DATABASE_URL=${DATABASE_URL}
+    volumes:
+      - ./api/public:/data/modele
+    networks:
+      - stack
+    depends_on:
+      - mongodb
+  
+  entrainement_model:
+    image: entrainement_model:latest
+    build:
+      context: .
+      dockerfile: ./entrainement/Dockerfile
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+    volumes:
+      - ./entrainement/data:/data/modele
+    networks:
+      - stack
+    depends_on:
+      - mongodb
+      - selenium
+  
+  selenium:
+    image: selenium/standalone-chrome:108.0
+    ports:
+      - "4444:4444"
+    environment:
+      - SE_NODE_MAX_SESSIONS=30
+      - SE_NODE_OVERRIDE_MAX_SESSIONS=true
+      - SE_VNC_NO_PASSWORD=1
+    networks:
+      - stack
+
+networks:
+  stack:
+    driver: bridge
