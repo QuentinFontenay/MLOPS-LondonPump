@@ -38,8 +38,7 @@ db.riskStations.insert_one(risk_stations)
 best_param_C, mae_train, mae_test = training_model(X_train, y_train, X_test, y_test)
 model, pred_train, pred_test, metrics = pred_scores_model(best_param_C, X_train, y_train, X_test, y_test)
 
-# save files and model                    # pour tests en local uniquement
-# save_location = '../data/train_saves/'
+# save files and model 
 dump(model, path_file() + '/model_reg_attendance_time.joblib')                                             # modele
 dump(scaler_features, path_file() + '/reg_scaler.pkl')                                                     # standard scaler
 dump(list(df.drop('AttendanceTimeSeconds', axis = 1)), path_file() + '/reg_df_columns.pkl')                # column list
