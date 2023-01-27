@@ -122,21 +122,7 @@ def get_weather():
     '''
     get weather data from openweather
     '''
-    options = webdriver.ChromeOptions()
-    options.add_argument("--headless")
-    # initialize driver
-    driver = get_driver()
-    weather_dl_link = get_download_link(
-        url= 'https://data.london.gov.uk/dataset/weather-london',
-        link_text= 'Weather London',
-        driver=driver
-        )
-    meteo = pd.read_csv(weather_dl_link)
-    if os.path.exists(weather_dl_link):
-        os.remove(weather_dl_link)
-    driver.close()
-
-    return meteo
+    'A completer'
 
 def extract(path_to_data= "../data"):
     '''
