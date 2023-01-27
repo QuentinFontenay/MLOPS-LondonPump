@@ -3,7 +3,7 @@ import sys
 
 # définir où trouver le package 'clean_data_add_features' (utilisé pour les fixtures)
 # dans "/entrainement/clean_data_add_features/"
-sys.path.append(os.path.split(os.getcwd())[0]+"/clean_data_add_features/")
+sys.path.append(os.path.split(os.getcwd())[0]+"/cleaning/")
 
 
 
