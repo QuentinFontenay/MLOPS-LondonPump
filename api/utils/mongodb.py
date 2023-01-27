@@ -1,10 +1,13 @@
 from pymongo import mongo_client
 import pymongo
-from .config import settings
+from dotenv import load_dotenv
+import os
 
-print(f'Connecting to MongoDB {settings.DATABASE_URL}')
+load_dotenv()
+
+print(f'Connecting to MongoDB {os.getenv("DATABASE_URL")}')
 client = mongo_client.MongoClient(
-    settings.DATABASE_URL, serverSelectionTimeoutMS=5000)
+    os.getenv('DATABASE_URL'), serverSelectionTimeoutMS=5000)
 
 try:
     conn = client.server_info()
@@ -12,7 +15,7 @@ try:
 except Exception:
     print("Unable to connect to the MongoDB server.")
 
-db = client[settings.MONGO_INITDB_DATABASE]
+db = client[os.getenv('MONGO_INITDB_DATABASE')]
 User = db.users
 Predictions = db.predictions
 Stations = db.stations

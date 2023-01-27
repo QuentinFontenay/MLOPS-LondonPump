@@ -21,8 +21,9 @@ services:
       - JWT_ALGORITHM=${JWT_ALGORITHM}
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
       - DATABASE_URL=${DATABASE_URL}
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
     volumes:
-      - ./api/public:/data/modele
+      - ./data/modele:/data/modele
     networks:
       - stack
     depends_on:
@@ -35,8 +36,11 @@ services:
       dockerfile: ./entrainement/Dockerfile
     environment:
       - DATABASE_URL=${DATABASE_URL}
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+      - VISUAL_CROSSING_KEY=${VISUAL_CROSSING_KEY}
+      - SELENIUM_HOST=${SELENIUM_HOST}
     volumes:
-      - ./entrainement/data:/data/modele
+      - ./data/modele:/data/modele
     networks:
       - stack
     depends_on:

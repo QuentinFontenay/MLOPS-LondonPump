@@ -2,15 +2,18 @@ from bson import ObjectId
 from fastapi import Depends, HTTPException, status
 from auth.serializers import userEntity
 from .mongodb import User
-from .config import settings
+from dotenv import load_dotenv
+import os
 from jose import jwt
 from fastapi.security import OAuth2PasswordBearer
+
+load_dotenv()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 def require_user(token: str = Depends(oauth2_scheme)):
     try:
-        payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
+        payload = jwt.decode(token, os.getenv('JWT_SECRET_KEY'), algorithms=[os.getenv('JWT_ALGORITHM')])
         user_id: str = payload.get("sub")
         user = userEntity(User.find_one({ '_id': ObjectId(str(user_id)) }))
 

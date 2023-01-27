@@ -6,8 +6,9 @@ def convert_gps(data):
     Convert GPS data from incidents dataframe from OSGB 1936 (British National Grid) to WGS 84
     '''
     transformer = pyproj.Transformer.from_crs("epsg:27700", "epsg:4326")
-    for index, row in data.iterrows():
-        data.loc[index,'Lat'], data.loc[index,'Lon'] = transformer.transform(row['Easting_rounded'], row['Northing_rounded'])
+    gps_result = transformer.transform(data['Easting_rounded'], data['Northing_rounded'])
+    data['Lat'] = gps_result[0]
+    data['Lon'] = gps_result[1]
 
     return data
 
