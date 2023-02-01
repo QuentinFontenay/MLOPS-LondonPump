@@ -1,14 +1,14 @@
-from clean_data_add_features.consistency_checks import num_pumps_attending, num_stations_pump_attending, speed_over_60
-from clean_data_add_features.create_variables import create_appliance, create_mobilised_rank, incident_type_category
-from clean_data_add_features.data_removal import remove_dartford, remove_unused
-from clean_data_add_features.external_variables import add_holidays, add_traffic, add_weather
-from clean_data_add_features.gps_distance import convert_gps, distance_calc
-from clean_data_add_features.missing_values import missing_travel_time, missing_special_service, missing_deployed_from_location, \
+from cleaning.consistency_checks import num_pumps_attending, num_stations_pump_attending, speed_over_60
+from cleaning.create_variables import create_appliance, create_mobilised_rank, incident_type_category
+from cleaning.data_removal import remove_dartford, remove_unused
+from cleaning.external_variables import add_holidays, add_traffic, add_weather
+from cleaning.gps_distance import convert_gps, distance_calc
+from cleaning.missing_values import missing_travel_time, missing_special_service, missing_deployed_from_location, \
     missing_date_and_time_left, missing_date_of_call, missing_delay_description, \
     missing_deployed_from_station, missing_tournout_time_seconds
-from clean_data_add_features.pumps_count import total_pumps_out, pumps_available, rows_delete
-from clean_data_add_features.read_merge_datasets import extract, merge_datasets
-from clean_data_add_features.variables_format import convert_date_and_time, datetime_variables, format_rename_columns, remove_variables
+from cleaning.pumps_count import total_pumps_out, pumps_available, rows_delete
+from cleaning.read_merge_datasets import extract, merge_datasets
+from cleaning.variables_format import convert_date_and_time, datetime_variables, format_rename_columns, remove_variables
 
 
 def cleaned_data():

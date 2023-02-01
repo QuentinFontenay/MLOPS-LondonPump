@@ -7,10 +7,13 @@ from fastapi.responses import JSONResponse
 from utils.mongodb import User
 from utils.bcrypt import hash_password, verify_password
 from .serializers import userResponseEntity, userEntity
-from utils.config import settings
 from utils.oauth2 import require_user
 from fastapi.security import OAuth2PasswordRequestForm
 from .service import create_access_token
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 router = APIRouter()
 
@@ -25,7 +28,7 @@ def login(payload: OAuth2PasswordRequestForm = Depends()):
     if not verify_password(payload.password, user['password']):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Incorrect Email or Password')
 
-    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRES_IN)
+    access_token_expires = timedelta(minutes=int(os.getenv('ACCESS_TOKEN_EXPIRES_IN')))
     access_token, time_expire = create_access_token(
         data={"sub": user["id"]}, expires_delta=access_token_expires
     )
@@ -36,7 +39,7 @@ def login(payload: OAuth2PasswordRequestForm = Depends()):
 def refresh_token(user_id: str = Depends(require_user)):
     """Refresh du token d'accès
     """
-    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRES_IN)
+    access_token_expires = timedelta(minutes=int(os.getenv('ACCESS_TOKEN_EXPIRES_IN')))
     access_token, time_expire = create_access_token(
         data={"sub": user_id}, expires_delta=access_token_expires
     )

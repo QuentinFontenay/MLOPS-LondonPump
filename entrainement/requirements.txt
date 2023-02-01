@@ -1,0 +1,10 @@
+pandas
+numpy
+workalendar
+scikit-learn
+joblib
+pyproj
+pymongo
+selenium
+openpyxl
+statsmodels

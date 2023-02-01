@@ -1,17 +1,14 @@
 import numpy as np
-from convertbng.cutil import convert_lonlat     # to convert gps data
-
+import pyproj
 
 def convert_gps(data):
     '''
     Convert GPS data from incidents dataframe from OSGB 1936 (British National Grid) to WGS 84
     '''
-
-    gps_conv = convert_lonlat(data['Easting_rounded'].to_list(), data['Northing_rounded'].to_list())
-    
-    # create new columns for GPS converted
-    data['Lat'] = gps_conv[1]
-    data['Lon'] = gps_conv[0]
+    transformer = pyproj.Transformer.from_crs("epsg:27700", "epsg:4326")
+    gps_result = transformer.transform(data['Easting_rounded'], data['Northing_rounded'])
+    data['Lat'] = gps_result[0]
+    data['Lon'] = gps_result[1]
 
     return data
 

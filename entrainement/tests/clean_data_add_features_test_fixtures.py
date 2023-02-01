@@ -5,17 +5,17 @@ import numpy as np
 import os
 
 # importer les fonctions à tester (dans package 'clean_data_add_features' : voir paramétrage dans le fichier de test)
-from consistency_checks import num_pumps_attending, num_stations_pump_attending, speed_over_60
-from create_variables import create_appliance, create_mobilised_rank, incident_type_category
-from data_removal import remove_dartford, remove_unused
-from external_variables import add_holidays, add_traffic, add_weather
-from gps_distance import convert_gps, distance_calc
-from missing_values import missing_travel_time, missing_special_service, missing_deployed_from_location, \
+from cleaning.consistency_checks import num_pumps_attending, num_stations_pump_attending, speed_over_60
+from cleaning.create_variables import create_appliance, create_mobilised_rank, incident_type_category
+from cleaning.data_removal import remove_dartford, remove_unused
+from cleaning.external_variables import add_holidays, add_traffic, add_weather
+from cleaning.gps_distance import convert_gps, distance_calc
+from cleaning.missing_values import missing_travel_time, missing_special_service, missing_deployed_from_location, \
     missing_date_and_time_left, missing_date_of_call, missing_delay_description, \
     missing_deployed_from_station, missing_tournout_time_seconds
-from pumps_count import total_pumps_out, pumps_available, rows_delete
-from read_merge_datasets import extract, merge_datasets
-from variables_format import convert_date_and_time, datetime_variables, format_rename_columns, remove_variables
+from cleaning.pumps_count import total_pumps_out, pumps_available, rows_delete
+from cleaning.read_merge_datasets import extract, merge_datasets
+from cleaning.variables_format import convert_date_and_time, datetime_variables, format_rename_columns, remove_variables
 
 
 # emplacement des données originales du projet

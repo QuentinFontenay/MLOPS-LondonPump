@@ -1,23 +1,21 @@
 from joblib import load
 import pandas as pd
-import os
-from utils.mongodb import Stations
+from utils.mongodb import RiskStations
+from utils.helpers import path_file
 
 def load_file():
-    script_dir = os.path.dirname(__file__)
-
-    reg_scaler = load(os.path.join(os.path.split(script_dir)[0], 'public/reg_scaler.pkl'))
+    reg_scaler = load(path_file() + '/reg_scaler.pkl')
     # les colonnes des variables de base du modèle (avant dichotomisation) + leurs formats
-    reg_df_columns = load(os.path.join(os.path.split(script_dir)[0], 'public/reg_df_columns.pkl'))
+    reg_df_columns = load(path_file() + '/reg_df_columns.pkl')
 
     # les colonnes après dichotomisation = le format sur lequel le modèle sauvegardé "sait faire des prédictions"
-    reg_data_dummies_columns = load(os.path.join(os.path.split(script_dir)[0], 'public/reg_data_dummies_columns.pkl'))
+    reg_data_dummies_columns = load(path_file() + '/reg_data_dummies_columns.pkl')
 
-    model = load(os.path.join(os.path.split(script_dir)[0], 'public/passiveAggressiveRegressor_mlops.joblib'))
+    model = load(path_file() + '/passiveAggressiveRegressor_mlops.joblib')
 
     return reg_scaler, reg_df_columns, reg_data_dummies_columns, model
 
-def predict_time_pumps(params):
+def predict_time_pumps(params, risk_stations):
     try:
         num_var = ['Distance', 'TotalOfPumpInLondon_Out', 'temp', 'precip', 'cloudcover', 'visibility', 'congestion_rate']
         reg_scaler, reg_df_columns, reg_data_dummies_columns, model = load_file()
@@ -37,8 +35,7 @@ def predict_time_pumps(params):
         data_ml = data_ml.fillna(0)
 
         # Voir si la caserne de provenance est dans la liste de celles qui ont un temps habituellement plus élevé que le modèle
-        stations = list(Stations.find({}, { "code": 1, "_id": 0 }))
-        if any(obj['code'] == data['Station_Code_of_ressource'][0] for obj in stations) == True:
+        if any(obj['code'] == data['Station_Code_of_ressource'][0] for obj in risk_stations[0]['stations']) == True:
             risk_underestimated = True
         else :
             risk_underestimated = False

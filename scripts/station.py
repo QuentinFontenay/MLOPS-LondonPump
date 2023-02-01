@@ -35,7 +35,7 @@ if args.file != None:
         csvreader = csv.reader(file)
         for index, row in enumerate(csvreader):
             if index != 0:
-                object = { "code": row[0], "name": row[1], "latitude": row[2], "longitude": row[3] }
+                object = { "code": row[0], "name": row[1], "latitude": float(row[2]), "longitude": float(row[3]) }
                 stations.insert_one(object)
                 print("Inserted station= %s" % row[0])
 else:

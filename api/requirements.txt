@@ -3,8 +3,6 @@ fastapi
 python-multipart
 pandas
 pymongo
-numpy
-selenium
 pytest
 httpx
 scikit-learn
@@ -13,3 +11,4 @@ mongomock
 mongoengine
 passlib[bcrypt]
 python-jose[cryptography]
+pydantic[dotenv]
