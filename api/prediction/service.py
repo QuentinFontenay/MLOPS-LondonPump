@@ -11,7 +11,7 @@ def load_file():
     # les colonnes après dichotomisation = le format sur lequel le modèle sauvegardé "sait faire des prédictions"
     reg_data_dummies_columns = load(path_file() + '/reg_data_dummies_columns.pkl')
 
-    model = load(path_file() + '/passiveAggressiveRegressor_mlops.joblib')
+    model = load(path_file() + '/PassiveAggressiveRegressor_mlops.joblib')
 
     return reg_scaler, reg_df_columns, reg_data_dummies_columns, model
 
