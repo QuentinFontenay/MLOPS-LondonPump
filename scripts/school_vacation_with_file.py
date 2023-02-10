@@ -5,6 +5,8 @@ import argparse
 import csv
 from datetime import datetime
 from dotenv import load_dotenv
+import csv
+import json
 
 load_dotenv()
 
@@ -27,10 +29,12 @@ argParser = argparse.ArgumentParser()
 argParser.add_argument("-f", "--file", help="file with holidays")
 
 args = argParser.parse_args()
-
+new_array = []
 if args.file != None:
     school_vacation = connect_to_mongo()
     year_vacation = list(school_vacation.find({}, { 'year': 1 }))
+    file = open(args.file)
+    row_count = len(file.readlines())
     with open(args.file, 'r') as file:
         csvreader = csv.reader(file)
         old_year = 0
@@ -39,9 +43,12 @@ if args.file != None:
             if index != 0:
                 datetime_object = datetime.strptime(row[0], '%d/%m/%Y')
                 if any(obj['year'] == datetime_object.year for obj in year_vacation) == False:
-                    if datetime_object.year > old_year:
+                    if datetime_object.year > old_year or row_count == index + 1:
                         if len(array) > 0:
+                            if row_count == index + 1:
+                                array.append(datetime_object)
                             object = { "year": old_year, "dates": array }
+                            new_array.append(object)
                             school_vacation.insert_one(object)
                             print("Inserted year= %s" % old_year)
                             result = school_vacation.delete_one({"year": old_year - 3})
@@ -51,6 +58,12 @@ if args.file != None:
                         old_year = datetime_object.year
                     if datetime_object.year == old_year:
                         array.append(datetime_object)
+    with open('schoolVacations.json', 'w') as f:
+        for index, row in enumerate(new_array):
+            del row['_id']
+            for index, date in enumerate(row['dates']):
+                row['dates'][index] = { "$date": { "$numberLong": str(round((date.timestamp() + 3600) * 1000)) } }
+        json.dump(new_array, f, indent=4)
 else:
     print("Please provide a file with holidays")
     sys.exit(2)
