@@ -86,9 +86,9 @@ for index, date_vacation in final_list.items():
                 object = { "year": old_year, "dates": array }
                 school_vacation.insert_one(object)
                 print("Inserted year= %s" % old_year)
-                result = school_vacation.delete_one({"year": old_year - 3})
+                result = school_vacation.delete_one({"year": old_year - 4})
                 if (result == 1):
-                    print("Deleted year= %s" % (old_year - 3))
+                    print("Deleted year= %s" % (old_year - 4))
                 array = []
             old_year = date_vacation.year
         if date_vacation.year == old_year:
