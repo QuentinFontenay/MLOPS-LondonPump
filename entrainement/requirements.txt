@@ -7,4 +7,4 @@ pyproj
 pymongo
 selenium
 openpyxl
-statsmodels
+scipy
