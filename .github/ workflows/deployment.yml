@@ -1,9 +1,6 @@
 name: deploy-prod
 
-on:
-  push:
-    branches: 
-      - ScriptInitMongoDB
+on: [push]
 
 jobs:
   test:
