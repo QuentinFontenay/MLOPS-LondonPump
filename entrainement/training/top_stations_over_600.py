@@ -1,5 +1,5 @@
 import pandas as pd
-import statsmodels.api as sm
+from scipy import stats
 
 def top_station_600(data, X_train):
     '''
@@ -35,13 +35,10 @@ def top_station_600(data, X_train):
     # for each station, calculate probability density to have attendance time in range [600,1600]
     for station in train_full['DeployedFromStation_Name'].unique().tolist():                                                # for each station
         data_kde = train_full[train_full['DeployedFromStation_Name'] == station]['AttendanceTimeSeconds'].astype("double")  # create attendance time table
-        kde = sm.nonparametric.KDEUnivariate(data_kde)   # initialize Univariate Kernel Density Estimator model
-        kde.fit(kernel= 'gau')                           # fit this model to the data
-        kde_sum = 0                                      # initialize estimated density
-        for i in range(600,1600,1):                      # compute density for range [600, 1600]
-            kde_sum += kde.evaluate(i)
-        kde600_values.append(kde_sum.sum())              # store calculated percentage
-        kde600_stations.append(station)                  # store station name
+        kde = stats.gaussian_kde(data_kde)              # Kernel density estimation = probability density function estimation
+        kde_sum = kde.integrate_box_1d(600,1600)        # density between [600, 1600]
+        kde600_values.append(kde_sum)                   # store calculated density
+        kde600_stations.append(station)                 # store station name
 
     # gather the results (data for all stations) in a dataframe
     kde_stations_over_600['station'] = kde600_stations
