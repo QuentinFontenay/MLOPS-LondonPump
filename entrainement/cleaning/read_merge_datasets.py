@@ -73,12 +73,12 @@ def get_data_london():
         link_text= 'LFB Mobilisation data - last three years',
         driver=driver
         )
+    driver.close()
     inc = pd.read_excel(incidents_dl_link)
     mob = pd.read_excel(mobilisations_dl_link)
     if os.path.exists(incidents_dl_link) and os.path.exists(mobilisations_dl_link):
         os.remove(incidents_dl_link)
         os.remove(mobilisations_dl_link)
-    driver.close()
 
     return inc, mob
 
@@ -216,7 +216,11 @@ def extract(path_to_data= "../data"):
 
     # create dataframes for other files
     #station_pos=pd.read_csv(os.path.join(path_to_data, stations_file))
-    meteo = pd.read_csv(os.path.join(path_to_data, weather_file)) # api
+    # meteo = pd.read_csv(os.path.join(path_to_data, weather_file)) # replaced by api
+    meteo_min_date = '2018-01-01'
+    end_previous_month = datetime.datetime.now().replace(day=1) - datetime.timedelta(days=1)
+    meteo_max_date = f'{end_previous_month:%Y-%m-%d}'
+    meteo = get_weather(date_min=meteo_min_date, date_max= meteo_max_date)
     # holidays=pd.read_csv(os.path.join(path_to_data, school_holidays_file), sep=';') # bdd
     #traffic = pd.read_csv(os.path.join(path_to_data, traffic_file), sep=';') # scraping
 
