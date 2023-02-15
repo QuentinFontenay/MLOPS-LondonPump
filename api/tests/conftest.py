@@ -3,7 +3,8 @@ import os
 import sys
 from fastapi.testclient import TestClient
 
-sys.path.append(os.path.split(os.getcwd())[0]+"/api/")
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from utils.mongodb import User, Predictions
 
 @pytest.fixture(scope="session")
