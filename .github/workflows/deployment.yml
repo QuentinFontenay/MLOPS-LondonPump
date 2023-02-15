@@ -33,4 +33,4 @@ jobs:
         pip install pytest fastapi uvicorn pymongo httpx wheel python-dotenv numpy pandas
     - name: Run pytest
       run: | 
-        pytest
+        pytest api/tests/
