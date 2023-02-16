@@ -11,23 +11,6 @@ from selenium.webdriver.common.by import By
 import requests
 import io
 
-
-# initial data location (if main clean file in /entrainement/clean_data_add_features/)
-# data_loc = "../../data/"
-
-# initial data location (if main clean file in /entrainement/)
-# data_loc = "../data/"
-
-#os.chdir(os.path.dirname(os.path.abspath(__file__)))
-
-# original files => see later how (database / scrap)
-incidents_file = 'LFB Incident data Last 3 years'
-mobilisations_file = 'LFB Mobilisation data Last 3 years'
-stations_file = 'pos station.csv'                                # only once (no change except if new stations built)
-school_holidays_file = 'holidays.csv'                            # to be updated when new calendar available
-weather_file = 'Weather London.csv'                              # to be updated (get past month data, once a month ?)
-traffic_file = 'london_congestion.csv'
-
 def get_holidays():
     '''
     get holidays from mongodb
@@ -198,31 +181,18 @@ def get_weather(date_min, date_max):
     
     return weather
 
-def extract(path_to_data= "../data"):
+def extract():
     '''
     read data from original data folder (../data by default)
     '''
-    
-    # convert xlsx datasets to csv (xlsx from https://data.london.gov.uk/)
-    # Xlsx2csv(incidents_file+'.xlsx').convert((incidents_file+'.csv'))
-    # Xlsx2csv(mobilisations_file+'.xlsx').convert((mobilisations_file+'.csv'))
     inc, mob = get_data_london()
     holidays = get_holidays()
     traffic = get_traffic()
     stations = get_stations()
-    # create dataframes from csv
-    # inc = pd.read_csv(os.path.join(path_to_data, incidents_file+'.csv')) # scraping
-    # mob = pd.read_csv(os.path.join(path_to_data, mobilisations_file+'.csv')) # scraping
-
-    # create dataframes for other files
-    #station_pos=pd.read_csv(os.path.join(path_to_data, stations_file))
-    # meteo = pd.read_csv(os.path.join(path_to_data, weather_file)) # replaced by api
     meteo_min_date = '2018-01-01'
     end_previous_month = datetime.datetime.now().replace(day=1) - datetime.timedelta(days=1)
     meteo_max_date = f'{end_previous_month:%Y-%m-%d}'
     meteo = get_weather(date_min=meteo_min_date, date_max= meteo_max_date)
-    # holidays=pd.read_csv(os.path.join(path_to_data, school_holidays_file), sep=';') # bdd
-    #traffic = pd.read_csv(os.path.join(path_to_data, traffic_file), sep=';') # scraping
 
     return inc, mob, stations, meteo, holidays, traffic
 
@@ -231,7 +201,6 @@ def merge_datasets(incidents, mobilisations):
     '''
     Merge incidents datasets and mobilisations dataset
     '''
-
     data = mobilisations.merge(right = incidents, on = 'IncidentNumber', how = 'left')
 
     return data
