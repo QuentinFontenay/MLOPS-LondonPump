@@ -8,3 +8,6 @@ pymongo
 selenium
 openpyxl
 scipy
+
+python-dotenv
+requests
