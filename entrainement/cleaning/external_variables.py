@@ -11,16 +11,6 @@ def add_weather(data, weather):
     # create temporaty date variable in main dataframe
     data['date'] = data['DateAndTimeMobilised'].dt.strftime('%Y-%m-%d %H')
 
-        # wreate date column
-    weather['date'] = pd.to_datetime(weather['datetime']).dt.strftime('%Y-%m-%d %H')
-    
-    # keep useful columns
-    keep_columns = ['temp', 'precip', 'cloudcover', 'visibility', 'conditions', 'icon', 'date']
-    weather = weather[keep_columns]
-    
-    # replace NaN values (only precip column concerned => 0)
-    weather = weather.fillna(0)
-
     # merge weather date into main dataframe
     data = data.merge(weather, how= 'left', on= 'date')
 
