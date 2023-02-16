@@ -64,6 +64,7 @@ services:
       - SE_NODE_MAX_SESSIONS=30
       - SE_NODE_OVERRIDE_MAX_SESSIONS=true
       - SE_VNC_NO_PASSWORD=1
+    shm_size: '2g'
     networks:
       - stack
 

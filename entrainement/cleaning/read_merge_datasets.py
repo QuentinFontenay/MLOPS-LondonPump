@@ -8,6 +8,9 @@ warnings.filterwarnings("ignore")
 from selenium import webdriver
 import pandas as pd
 from selenium.webdriver.common.by import By
+import requests
+import io
+
 
 # initial data location (if main clean file in /entrainement/clean_data_add_features/)
 # data_loc = "../../data/"
@@ -70,12 +73,12 @@ def get_data_london():
         link_text= 'LFB Mobilisation data - last three years',
         driver=driver
         )
+    driver.close()
     inc = pd.read_excel(incidents_dl_link)
     mob = pd.read_excel(mobilisations_dl_link)
     if os.path.exists(incidents_dl_link) and os.path.exists(mobilisations_dl_link):
         os.remove(incidents_dl_link)
         os.remove(mobilisations_dl_link)
-    driver.close()
 
     return inc, mob
 
@@ -118,11 +121,82 @@ def get_traffic():
 
     return historical_congestion_data
 
-def get_weather():
+def get_weather(date_min, date_max):
     '''
-    get weather data from openweather
+    get data from VisualCrossing API : https://www.visualcrossing.com/
+    London weather data by hour (24 values for 1 day), between 2 dates
+
+    inputs = 2 dates (string : 'yyyy-mm-dd') :
+        date_min = beginning of period to get from API 
+        date_max = end of period to get from API
+
+    returns:
+        dataframe ready to merge with main dataframe 
     '''
-    'A completer'
+
+    api_key = os.getenv('VISUAL_CROSSING_KEY')
+    
+    y_min_input, m_min_input, d_min_input = int(date_min[:4]), date_min[5:7], date_min[8:]
+    y_max_input, m_max_input, d_max_input = int(date_max[:4]), date_max[5:7], date_max[8:]
+    
+    # initialize result dataframe
+    weather = pd.DataFrame()
+
+    # loop to get the data year by year (api limitation = 10000 records by query)
+    for year in range(y_min_input, y_max_input+1):
+
+        # when on the first year of the period : check if other years coming after or not
+        if year == y_min_input:
+            # define the minimum date to be requested
+            y_min, m_min, d_min = y_min_input, m_min_input, d_min_input
+            # then look if we are in the last year of the period, to define end of period (date or year end)
+            if year == y_max_input:
+                y_max, m_max, d_max = year, m_max_input, d_max_input
+            else:
+                y_max, m_max, d_max = year, '12', '31'
+
+        # when on other years
+        else :
+            # define the minimum date to be requested
+            y_min, m_min, d_min = year, '01', '01'
+            # then look if we are in the last year of the period, to define end of period (date or year end)
+            if year == y_max_input:
+                y_max, m_max, d_max = year, m_max_input, d_max_input
+            else:
+                y_max, m_max, d_max = year, '12', '31'
+    
+        # get data from api
+        url = 'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/LONDON/{y_min}-{m_min}-{d_min}/{y_max}-{m_max}-{d_max}\
+?unitGroup=metric\
+&include=hours\
+&key={api_key}\
+&contentType=csv'.format(
+            y_min=y_min,
+            m_min=m_min,
+            d_min=d_min,
+            y_max=y_max,
+            m_max=m_max,
+            d_max=d_max,
+            api_key=api_key
+)
+        r = requests.get(url)
+        
+        # create a dataframe with only useful data 
+        df = pd.read_csv(io.StringIO(r.content.decode('utf-8')))
+        df['date'] = pd.to_datetime(df['datetime']).dt.strftime('%Y-%m-%d %H')
+        df = df[['temp', 'precip', 'cloudcover', 'visibility', 'conditions', 'icon', 'date']]
+        
+        # add the dataframe to result dataframe
+        weather = pd.concat([weather, df])
+
+    # replace NaN in 'precip' by 0 (NaN means no precipitation)
+    weather['precip'] = weather['precip'].fillna(0)
+    # replace other NaN by previous valid data
+    weather = weather.fillna(method='pad')
+    # reset index
+    weather = weather.reset_index(drop=True)
+    
+    return weather
 
 def extract(path_to_data= "../data"):
     '''
@@ -142,7 +216,11 @@ def extract(path_to_data= "../data"):
 
     # create dataframes for other files
     #station_pos=pd.read_csv(os.path.join(path_to_data, stations_file))
-    meteo = pd.read_csv(os.path.join(path_to_data, weather_file)) # api
+    # meteo = pd.read_csv(os.path.join(path_to_data, weather_file)) # replaced by api
+    meteo_min_date = '2018-01-01'
+    end_previous_month = datetime.datetime.now().replace(day=1) - datetime.timedelta(days=1)
+    meteo_max_date = f'{end_previous_month:%Y-%m-%d}'
+    meteo = get_weather(date_min=meteo_min_date, date_max= meteo_max_date)
     # holidays=pd.read_csv(os.path.join(path_to_data, school_holidays_file), sep=';') # bdd
     #traffic = pd.read_csv(os.path.join(path_to_data, traffic_file), sep=';') # scraping
 
