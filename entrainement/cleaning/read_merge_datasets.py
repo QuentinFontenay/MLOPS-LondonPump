@@ -71,11 +71,8 @@ def get_traffic():
     '''
     # initialize driver
     driver = get_driver()
-    driver.get('https://www.tomtom.com/traffic-index/london-traffic/')
+    driver.get('https://web.archive.org/web/20221110181646/https://www.tomtom.com/traffic-index/london-traffic/')
     driver.find_element(By.CLASS_NAME, 'CookieBar__button').click()
-    live_traffic = driver.find_elements(By.CLASS_NAME, 'live-number')
-    congestion_now = live_traffic[0].text
-    congestion_now = int(congestion_now.replace('%', ''))/100
     elt = driver.find_elements(By.TAG_NAME, 'li')
     congestion_data_year_3, congestion_data_year_percentages_3 = get_data_tabs(12, driver, elt, 0)
     congestion_data_year_2, congestion_data_year_percentages_2 = get_data_tabs(13, driver, elt, 1)
@@ -101,6 +98,14 @@ def get_traffic():
         congestion_data['year'] = year
         historical_congestion_data = pd.concat([historical_congestion_data, congestion_data]).reset_index(drop=True)
     driver.close()
+    # duplicate last actual data for missing years until current year
+    max_year = int(historical_congestion_data['year'].unique().max())
+    while max_year < datetime.now().year:
+        missing_year = max_year + 1
+        missing_year_congestion = historical_congestion_data[historical_congestion_data['year'] == str(max_year)]
+        missing_year_congestion['year'] = str(missing_year)
+        historical_congestion_data = pd.concat([missing_year_congestion, historical_congestion_data]).reset_index(drop=True)
+        max_year += 1
 
     return historical_congestion_data
 
