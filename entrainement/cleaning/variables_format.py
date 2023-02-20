@@ -69,6 +69,11 @@ def format_rename_columns(data):
     Change columns formats and names
     '''
 
+    # delete last incidents with NaN
+    delete_last_incidents = list(data.drop(['DateAndTimeLeft'], axis=1)[data.drop(['DateAndTimeLeft'], axis=1).isna().any(axis=1)]['IncidentNumber'])
+    if delete_last_incidents:
+        data = data[-data['IncidentNumber'].isin(delete_last_incidents)]
+
     # rename columns
     col_rename = {'Lat' : 'Latitude',
                   'Lon' : 'Longitude'}
