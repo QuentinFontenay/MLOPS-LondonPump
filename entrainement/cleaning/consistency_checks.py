@@ -64,7 +64,9 @@ def speed_over_60(data):
     
     # list and remove all incidents with some speeds over 60 km/h
     liste_incidents_60 = data[data['speed_km_per_hour'] > 60]['IncidentNumber'].unique().tolist()
-    data = data[-data['IncidentNumber'].isin(liste_incidents_60)]
+
+    if liste_incidents_60:
+        data = data[-data['IncidentNumber'].isin(liste_incidents_60)]
     
     # remove temporary variable
     data = data.drop('speed_km_per_hour', axis=1)
