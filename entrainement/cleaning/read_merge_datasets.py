@@ -2,7 +2,7 @@ import pandas as pd
 import os
 from utils.mongodb import connect_to_mongo
 from utils.selenium import get_driver, get_download_link, get_data_tabs
-from datetime import datetime
+from datetime import datetime, timedelta
 import warnings
 warnings.filterwarnings("ignore")
 from selenium import webdriver
@@ -109,21 +109,23 @@ def get_traffic():
 
     return historical_congestion_data
 
-def get_weather(date_min, date_max):
+def get_weather():
     '''
     get data from VisualCrossing API : https://www.visualcrossing.com/
-    London weather data by hour (24 values for 1 day), between 2 dates
-
-    inputs = 2 dates (string : 'yyyy-mm-dd') :
-        date_min = beginning of period to get from API 
-        date_max = end of period to get from API
+    London weather data by hour (24 values for 1 day)
+    For current year (until end of last month) + previous 3 years
 
     returns:
-        dataframe ready to merge with main dataframe 
+    dataframe ready to merge with main dataframe 
     '''
 
     api_key = os.getenv('VISUAL_CROSSING_KEY')
-    
+
+    # weather : get previous 3 years + current year
+    date_min = f'{datetime(datetime.now().year - 3, 1, 1):%Y-%m-%d}'
+    end_previous_month = datetime.now().replace(day=1) - timedelta(days=1)
+    date_max = f'{end_previous_month:%Y-%m-%d}'
+
     y_min_input, m_min_input, d_min_input = int(date_min[:4]), date_min[5:7], date_min[8:]
     y_max_input, m_max_input, d_max_input = int(date_max[:4]), date_max[5:7], date_max[8:]
     
@@ -194,11 +196,7 @@ def extract():
     holidays = get_holidays()
     traffic = get_traffic()
     stations = get_stations()
-    # weather : get previous 3 years + current year
-    meteo_min_date = f'{datetime.datetime(datetime.datetime.now().year - 3, 1, 1):%Y-%m-%d}'
-    end_previous_month = datetime.datetime.now().replace(day=1) - datetime.timedelta(days=1)
-    meteo_max_date = f'{end_previous_month:%Y-%m-%d}'
-    meteo = get_weather(date_min=meteo_min_date, date_max= meteo_max_date)
+    meteo = get_weather()
 
     return inc, mob, stations, meteo, holidays, traffic
 
