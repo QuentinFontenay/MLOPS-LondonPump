@@ -62,8 +62,7 @@ def add_traffic(data, traffic):
     # remove useless columns from traffic, rename, and format change
     traffic = traffic.drop(['year', 'hour', 'day', 'day_nb'], axis=1)
     traffic = traffic.rename({'congestion' : 'congestion_rate'}, axis = 1)
-    traffic['congestion_rate'] = traffic['congestion_rate'].str.replace(',', '.').astype(float)
-
+    
     # merge traffic into main dataframe and remove temporary column
     data = data.merge(right = traffic, how = 'left', on = 'congestion_key')
     data = data.drop('congestion_key', axis = 1)
