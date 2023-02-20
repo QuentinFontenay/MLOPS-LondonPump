@@ -189,7 +189,8 @@ def extract():
     holidays = get_holidays()
     traffic = get_traffic()
     stations = get_stations()
-    meteo_min_date = '2018-01-01'
+    # weather : get previous 3 years + current year
+    meteo_min_date = f'{datetime.datetime(datetime.datetime.now().year - 3, 1, 1):%Y-%m-%d}'
     end_previous_month = datetime.datetime.now().replace(day=1) - datetime.timedelta(days=1)
     meteo_max_date = f'{end_previous_month:%Y-%m-%d}'
     meteo = get_weather(date_min=meteo_min_date, date_max= meteo_max_date)
