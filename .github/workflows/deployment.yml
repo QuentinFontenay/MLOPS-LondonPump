@@ -44,13 +44,11 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-    
-      # - name: Azure CLI script
-      #   uses: azure/CLI@v1
-      #   with:
-      #     inlineScript: |
-      #       az acr login --name londonfire.azurecr.io
-      #       docker compose -f docker-compose.prod.yml up
+      - uses: Azure/get-keyvault-secrets@v1
+        with: 
+          keyvault: "secret-londonfire"
+          secrets: 'PythonEnv, SeleniumHost, JwtSecretKey, JwtAlgorithm, RefreshTokenExpire, AccessTokenExpire, VisualCrossingKey, DatabaseUrl, MongoDbLondonFireUser, MongoDbLondonFirePassword, MongoInitDbHost, MongoDbInitDatabase, MongoInitDbRootPassword, MongoInitDbRootUsername'
+        id: myGetSecretAction
       - uses: azure/docker-login@v1
         with:
           login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
@@ -58,6 +56,21 @@ jobs:
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
       - uses: actions/checkout@v1
+        env:
+          MONGO_INITDB_ROOT_USERNAME: ${{ steps.myGetSecretAction.outputs.MongoInitDbRootUsername }}
+          MONGO_INITDB_ROOT_PASSWORD: ${{ steps.myGetSecretAction.outputs.MongoInitDbRootPassword }}
+          MONGO_INITDB_DATABASE: ${{ steps.myGetSecretAction.outputs.MongoDbInitDatabase }}
+          MONGO_INITDB_HOST: ${{ steps.myGetSecretAction.outputs.MongoInitDbHost }}
+          MONGO_LONDON_FIRE_USER: ${{ steps.myGetSecretAction.outputs.MongoDbLondonFireUser }}
+          MONGO_LONDON_FIRE_PASSWORD: ${{ steps.myGetSecretAction.outputs.MongoDbLondonFirePassword }}
+          DATABASE_URL: ${{ steps.myGetSecretAction.outputs.DatabaseUrl }}
+          VISUAL_CROSSING_KEY: ${{ steps.myGetSecretAction.outputs.VisualCrossingKey }}
+          ACCESS_TOKEN_EXPIRES_IN: ${{ steps.myGetSecretAction.outputs.AccessTokenExpire }}
+          REFRESH_TOKEN_EXPIRES_IN: ${{ steps.myGetSecretAction.outputs.RefreshTokenExpire }}
+          JWT_ALGORITHM: ${{ steps.myGetSecretAction.outputs.JwtAlgorithm }}
+          JWT_SECRET_KEY: ${{ steps.myGetSecretAction.outputs.JwtSecretKey }}
+          SELENIUM_HOST: ${{ steps.myGetSecretAction.outputs.SeleniumHost }}
+          PYTHON_ENV: ${{ steps.myGetSecretAction.outputs.PythonEnv }}
       - run: |
           docker-compose -f docker-compose.prod.yml up -d
 
