@@ -54,25 +54,28 @@ jobs:
           login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
-
-      - uses: actions/checkout@v1
-        env:
-          MONGO_INITDB_ROOT_USERNAME: ${{ steps.myGetSecretAction.outputs.MongoInitDbRootUsername }}
-          MONGO_INITDB_ROOT_PASSWORD: ${{ steps.myGetSecretAction.outputs.MongoInitDbRootPassword }}
-          MONGO_INITDB_DATABASE: ${{ steps.myGetSecretAction.outputs.MongoDbInitDatabase }}
-          MONGO_INITDB_HOST: ${{ steps.myGetSecretAction.outputs.MongoInitDbHost }}
-          MONGO_LONDON_FIRE_USER: ${{ steps.myGetSecretAction.outputs.MongoDbLondonFireUser }}
-          MONGO_LONDON_FIRE_PASSWORD: ${{ steps.myGetSecretAction.outputs.MongoDbLondonFirePassword }}
-          DATABASE_URL: ${{ steps.myGetSecretAction.outputs.DatabaseUrl }}
-          VISUAL_CROSSING_KEY: ${{ steps.myGetSecretAction.outputs.VisualCrossingKey }}
-          ACCESS_TOKEN_EXPIRES_IN: ${{ steps.myGetSecretAction.outputs.AccessTokenExpire }}
-          REFRESH_TOKEN_EXPIRES_IN: ${{ steps.myGetSecretAction.outputs.RefreshTokenExpire }}
-          JWT_ALGORITHM: ${{ steps.myGetSecretAction.outputs.JwtAlgorithm }}
-          JWT_SECRET_KEY: ${{ steps.myGetSecretAction.outputs.JwtSecretKey }}
-          SELENIUM_HOST: ${{ steps.myGetSecretAction.outputs.SeleniumHost }}
-          PYTHON_ENV: ${{ steps.myGetSecretAction.outputs.PythonEnv }}
       - run: |
-          docker context create aci myacicontext
-          docker context use myacicontext
+          ls -la
           docker-compose -f docker-compose.prod.yml up
+
+      # - uses: actions/checkout@v1
+      #   env:
+      #     MONGO_INITDB_ROOT_USERNAME: ${{ steps.myGetSecretAction.outputs.MongoInitDbRootUsername }}
+      #     MONGO_INITDB_ROOT_PASSWORD: ${{ steps.myGetSecretAction.outputs.MongoInitDbRootPassword }}
+      #     MONGO_INITDB_DATABASE: ${{ steps.myGetSecretAction.outputs.MongoDbInitDatabase }}
+      #     MONGO_INITDB_HOST: ${{ steps.myGetSecretAction.outputs.MongoInitDbHost }}
+      #     MONGO_LONDON_FIRE_USER: ${{ steps.myGetSecretAction.outputs.MongoDbLondonFireUser }}
+      #     MONGO_LONDON_FIRE_PASSWORD: ${{ steps.myGetSecretAction.outputs.MongoDbLondonFirePassword }}
+      #     DATABASE_URL: ${{ steps.myGetSecretAction.outputs.DatabaseUrl }}
+      #     VISUAL_CROSSING_KEY: ${{ steps.myGetSecretAction.outputs.VisualCrossingKey }}
+      #     ACCESS_TOKEN_EXPIRES_IN: ${{ steps.myGetSecretAction.outputs.AccessTokenExpire }}
+      #     REFRESH_TOKEN_EXPIRES_IN: ${{ steps.myGetSecretAction.outputs.RefreshTokenExpire }}
+      #     JWT_ALGORITHM: ${{ steps.myGetSecretAction.outputs.JwtAlgorithm }}
+      #     JWT_SECRET_KEY: ${{ steps.myGetSecretAction.outputs.JwtSecretKey }}
+      #     SELENIUM_HOST: ${{ steps.myGetSecretAction.outputs.SeleniumHost }}
+      #     PYTHON_ENV: ${{ steps.myGetSecretAction.outputs.PythonEnv }}
+      # - run: |
+      #     docker context create aci myacicontext
+      #     docker context use myacicontext
+      #     docker-compose -f docker-compose.prod.yml up
 
