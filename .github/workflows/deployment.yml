@@ -52,10 +52,10 @@ jobs:
             az acr login --name londonfire.azurecr.io
             docker compose -f docker-compose.prod.yml up
       - uses: azure/docker-login@v1
-          with:
-            login-server: contoso.azurecr.io
-            username: ${{ secrets.REGISTRY_USERNAME }}
-            password: ${{ secrets.REGISTRY_PASSWORD }}
-        - run: |
-            docker compose -f docker-compose.prod.yml up
+        with:
+          login-server: contoso.azurecr.io
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+      - run: |
+          docker compose -f docker-compose.prod.yml up
 
