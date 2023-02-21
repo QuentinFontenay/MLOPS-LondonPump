@@ -40,14 +40,13 @@ jobs:
 
     steps:
       - name: Azure Login
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
     
-    - name: Azure CLI script
-      uses: azure/CLI@v1
-      with:
-        azcliversion: 2.0.72
-        inlineScript: |
-          az acr login --name londonfire.azurecr.io
-          docker compose -f docker-compose.prod.yml up
+      - name: Azure CLI script
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az acr login --name londonfire.azurecr.io
+            docker compose -f docker-compose.prod.yml up
