@@ -53,9 +53,9 @@ jobs:
       #       docker compose -f docker-compose.prod.yml up
       - uses: azure/docker-login@v1
         with:
-          login-server: contoso.azurecr.io
+          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
       - run: |
-          docker compose -f docker-compose.prod.yml up
+          docker compose up
 
