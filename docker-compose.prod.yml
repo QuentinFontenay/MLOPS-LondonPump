@@ -16,7 +16,7 @@ services:
       - MONGO_LONDON_FIRE_USER=${MONGO_LONDON_FIRE_USER}
       - MONGO_LONDON_FIRE_PASSWORD=${MONGO_LONDON_FIRE_PASSWORD}
     volumes:
-      - persistent-mongodb:/data/db
+      - londonfire:/data/db
     networks:
       - stack
 
@@ -84,7 +84,7 @@ networks:
     driver: bridge
 
 volumes:
-  persistent-mongodb:
+  londonfire:
     driver: azure_file
     driver_opts:
         share_name: londonfire
