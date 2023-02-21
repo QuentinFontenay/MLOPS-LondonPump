@@ -72,6 +72,7 @@ jobs:
           SELENIUM_HOST: ${{ steps.myGetSecretAction.outputs.SeleniumHost }}
           PYTHON_ENV: ${{ steps.myGetSecretAction.outputs.PythonEnv }}
       - run: |
-          docker context ls
-          docker-compose -f docker-compose.prod.yml up -d
+          docker context create aci myacicontext
+          docker context use myacicontext
+          docker-compose -f docker-compose.prod.yml up
 
