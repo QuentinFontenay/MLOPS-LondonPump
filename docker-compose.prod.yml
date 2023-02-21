@@ -9,6 +9,8 @@ services:
     ports:
       - "27017:27017"
     restart: always
+    env_file:
+      - .env.production
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
@@ -22,6 +24,8 @@ services:
 
   api:
     image: londonfire.azurecr.io/api:latest
+    env_file:
+      - .env.production
     ports:
       - "8000:8000"
     environment:
@@ -45,6 +49,8 @@ services:
   
   entrainementmodel:
     image: londonfire.azurecr.io/entrainement_model:latest
+    env_file:
+      - .env.production
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
