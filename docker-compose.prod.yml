@@ -31,8 +31,8 @@ services:
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
       - DATABASE_URL=${DATABASE_URL}
       - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
-    volumes:
-      - file-project/modele:/data/modele
+    # volumes:
+    #   - file-project/modele:/data/modele
     deploy:
       resources:
         limits:
@@ -50,8 +50,8 @@ services:
       - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
       - VISUAL_CROSSING_KEY=${VISUAL_CROSSING_KEY}
       - SELENIUM_HOST=${SELENIUM_HOST}
-    volumes:
-      - file-project/modele:/data/modele
+    # volumes:
+    #   - file-project/modele:/data/modele
     deploy:
       resources:
         limits:
@@ -89,9 +89,9 @@ volumes:
     driver_opts:
         share_name: londonfire
         storage_account_name: londonfire
-  file-project:
-    driver: azure_file
-    driver_opts:
-        share_name: fileshares
-        storage_account_name: fileshares
+  # file-project:
+  #   driver: azure_file
+  #   driver_opts:
+  #       share_name: fileshares
+  #       storage_account_name: fileshares
 
