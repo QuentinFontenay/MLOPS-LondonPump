@@ -58,5 +58,6 @@ jobs:
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
       - uses: actions/checkout@v1
-        run: docker-compose -f docker-compose.prod.yml up -d
+      - run: |
+          docker-compose -f -f docker-compose.prod.yml up -d
 
