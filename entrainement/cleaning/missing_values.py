@@ -42,6 +42,11 @@ def missing_tournout_time_seconds(data):
             data['TravelTimeSeconds'][i] = data['AttendanceTimeSeconds'][i] - data['TurnoutTimeSeconds'][i]
             # recalculate DateAndTimeMobile = DateAndTimeMobilised + TurnoutTimeSeconds
             data['DateAndTimeMobile'][i] = pd.to_datetime(data['DateAndTimeMobilised'][i]) + pd.to_timedelta(data['TurnoutTimeSeconds'][i], unit = 's')
+    
+    # delete incidents still showing some NaN in TurnoutTimeSeconds
+    inc_turnout_missing = list(data[data['TurnoutTimeSeconds'].isna()]['IncidentNumber'])
+    if inc_turnout_missing:
+        data = data[-data['IncidentNumber'].isin(inc_turnout_missing)]
 
     return data
 
@@ -80,6 +85,11 @@ def missing_travel_time(data):
         inc_mob_eq_arrived = data.loc[index_travel_nan_eq_arrived]['IncidentNumber'].unique()
         # remove records corresponding to these incidents
         data = data.drop(axis = 0, index = data[data['IncidentNumber'].isin(inc_mob_eq_arrived)].index)
+
+    # delete incidents still showing some NaN in TravelTimeSeconds
+    inc_traveltime_missing = list(data[data['TravelTimeSeconds'].isna()]['IncidentNumber'])
+    if inc_traveltime_missing:
+        data = data[-data['IncidentNumber'].isin(inc_traveltime_missing)]
 
     return data
 
