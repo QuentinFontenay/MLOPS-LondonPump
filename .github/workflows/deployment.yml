@@ -80,5 +80,5 @@ jobs:
           docker login azure
           docker context create aci myacicontext
           docker context use myacicontext
-          docker-compose -f docker-compose.prod.yml up
+          docker context ls
 
