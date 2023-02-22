@@ -75,8 +75,10 @@ jobs:
           SELENIUM_HOST: ${{ steps.myGetSecretAction.outputs.SeleniumHost }}
           PYTHON_ENV: ${{ steps.myGetSecretAction.outputs.PythonEnv }}
       - run: |
+          sudo curl -L https://raw.githubusercontent.com/docker/compose-cli/main/scripts/install/install_linux.sh | sudo sh
+          docker -v
           docker login ${{ secrets.REGISTRY_LOGIN_SERVER }} -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
-          /usr/local/bin/docker context create aci myacicontext
+          docker context create aci myacicontext
           docker context use myacicontext
           docker-compose -f docker-compose.prod.yml up
 
