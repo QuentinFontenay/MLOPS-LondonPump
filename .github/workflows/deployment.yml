@@ -77,6 +77,8 @@ jobs:
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
       - run: |
+          docker context create aci myacicontext
+          docker context use myacicontext
           docker-compose -f docker-compose.prod.yml up
 
       # - uses: actions/checkout@v1
