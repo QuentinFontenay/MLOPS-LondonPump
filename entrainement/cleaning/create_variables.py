@@ -118,6 +118,10 @@ def incident_type_category(data):
     
     # remove useless columns "IncidentGroup","StopCodeDescription", "SpecialServiceType"
     data=data.drop(['IncidentGroup','StopCodeDescription', 'SpecialServiceType'], axis = 1)
+
+    # remove incident not in the 5 defined categories
+    inc_categories = ['Fire', 'Major Environmental Disasters', 'Domestic Incidents', 'Local Emergencies', 'Prior Arrangement']
+    data = data[data['IncidentType'].isin(inc_categories)]
     
     return data
 
