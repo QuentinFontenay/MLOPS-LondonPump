@@ -76,7 +76,7 @@ jobs:
           PYTHON_ENV: ${{ steps.myGetSecretAction.outputs.PythonEnv }}
       - run: |
           docker login ${{ secrets.REGISTRY_LOGIN_SERVER }} -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
-          docker context create aci myacicontext
+          /usr/local/bin/docker context create aci myacicontext
           docker context use myacicontext
           docker-compose -f docker-compose.prod.yml up
 
