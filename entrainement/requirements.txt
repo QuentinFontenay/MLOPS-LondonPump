@@ -10,3 +10,4 @@ openpyxl==3.0.10
 scipy
 python-dotenv
 requests
+pytest
