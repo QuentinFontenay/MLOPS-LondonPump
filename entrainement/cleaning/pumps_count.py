@@ -67,6 +67,11 @@ def pumps_available(data):
     data['PumpAvailable'] = data['PumpAvailable'].apply(lambda x: x if x>0 else 0)
     # data['PumpAvailable'] = data['PumpAvailable'].replace([-1], 0)
 
+    # delete incidents showing some NaN in PumpAvailable
+    inc_pumpavailable_missing = list(data[data['PumpAvailable'].isna()]['IncidentNumber'])
+    if inc_pumpavailable_missing:
+        data = data[-data['IncidentNumber'].isin(inc_pumpavailable_missing)]
+
     return data
 
 
