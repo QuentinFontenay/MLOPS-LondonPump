@@ -2,18 +2,14 @@ services:
   mongodb:
     image: londonfire.azurecr.io/mongo-londonfire:latest
     env_file: ./.env.production
+    ports:
+      - "27017:27017"
     deploy:
       resources:
         limits:
           memory: 2g
           cpus: '0.1'
     restart: always
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
-      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
-      - MONGO_LONDON_FIRE_USER=${MONGO_LONDON_FIRE_USER}
-      - MONGO_LONDON_FIRE_PASSWORD=${MONGO_LONDON_FIRE_PASSWORD}
     volumes:
       - londonfire:/data/db
     networks:
@@ -24,13 +20,6 @@ services:
     env_file: ./.env.production
     ports:
       - "8000:8000"
-    environment:
-      - ACCESS_TOKEN_EXPIRES_IN=${ACCESS_TOKEN_EXPIRES_IN}
-      - REFRESH_TOKEN_EXPIRES_IN=${REFRESH_TOKEN_EXPIRES_IN}
-      - JWT_ALGORITHM=${JWT_ALGORITHM}
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
-      - DATABASE_URL=${DATABASE_URL}
-      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
     # volumes:
     #   - file-project/modele:/data/modele
     deploy:
@@ -46,11 +35,6 @@ services:
   entrainementmodel:
     image: londonfire.azurecr.io/entrainement_model:latest
     env_file: ./.env.production
-    environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
-      - VISUAL_CROSSING_KEY=${VISUAL_CROSSING_KEY}
-      - SELENIUM_HOST=${SELENIUM_HOST}
     # volumes:
     #   - file-project/modele:/data/modele
     deploy:
