@@ -57,31 +57,33 @@ jobs:
 
       - name: Docker Login
         uses: azure/docker-login@v1
-        env:
-          MONGO_INITDB_ROOT_USERNAME: ${{ steps.myGetSecretAction.outputs.MongoInitDbRootUsername }}
-          MONGO_INITDB_ROOT_PASSWORD: ${{ steps.myGetSecretAction.outputs.MongoInitDbRootPassword }}
-          MONGO_INITDB_DATABASE: ${{ steps.myGetSecretAction.outputs.MongoDbInitDatabase }}
-          MONGO_INITDB_HOST: ${{ steps.myGetSecretAction.outputs.MongoInitDbHost }}
-          MONGO_LONDON_FIRE_USER: ${{ steps.myGetSecretAction.outputs.MongoDbLondonFireUser }}
-          MONGO_LONDON_FIRE_PASSWORD: ${{ steps.myGetSecretAction.outputs.MongoDbLondonFirePassword }}
-          DATABASE_URL: ${{ steps.myGetSecretAction.outputs.DatabaseUrl }}
-          VISUAL_CROSSING_KEY: ${{ steps.myGetSecretAction.outputs.VisualCrossingKey }}
-          ACCESS_TOKEN_EXPIRES_IN: ${{ steps.myGetSecretAction.outputs.AccessTokenExpire }}
-          REFRESH_TOKEN_EXPIRES_IN: ${{ steps.myGetSecretAction.outputs.RefreshTokenExpire }}
-          JWT_ALGORITHM: ${{ steps.myGetSecretAction.outputs.JwtAlgorithm }}
-          JWT_SECRET_KEY: ${{ steps.myGetSecretAction.outputs.JwtSecretKey }}
-          SELENIUM_HOST: ${{ steps.myGetSecretAction.outputs.SeleniumHost }}
-          PYTHON_ENV: ${{ steps.myGetSecretAction.outputs.PythonEnv }}
         with:
           login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
+      - name: create env file
+        run: |
+          touch .env
+          echo MONGO_INITDB_ROOT_USERNAME=${{ steps.myGetSecretAction.outputs.MongoInitDbRootUsername }} >> .env
+          echo MONGO_INITDB_ROOT_PASSWORD=${{ steps.myGetSecretAction.outputs.MongoInitDbRootPassword }} >> .env
+          echo MONGO_INITDB_DATABASE=${{ steps.myGetSecretAction.outputs.MongoDbInitDatabase }} >> .env
+          echo MONGO_INITDB_HOST=${{ steps.myGetSecretAction.outputs.MongoInitDbHost }} >> .env
+          echo MONGO_LONDON_FIRE_USER=${{ steps.myGetSecretAction.outputs.MongoDbLondonFireUser }} >> .env
+          echo MONGO_LONDON_FIRE_PASSWORD=${{ steps.myGetSecretAction.outputs.MongoDbLondonFirePassword }} >> .env
+          echo DATABASE_URL=${{ steps.myGetSecretAction.outputs.DatabaseUrl }} >> .env
+          echo VISUAL_CROSSING_KEY=${{ steps.myGetSecretAction.outputs.VisualCrossingKey }} >> .env
+          echo ACCESS_TOKEN_EXPIRES_IN=${{ steps.myGetSecretAction.outputs.AccessTokenExpire }} >> .env
+          echo REFRESH_TOKEN_EXPIRES_IN=${{ steps.myGetSecretAction.outputs.RefreshTokenExpire }} >> .env
+          echo JWT_ALGORITHM=${{ steps.myGetSecretAction.outputs.JwtAlgorithm }} >> .env
+          echo JWT_SECRET_KEY=${{ steps.myGetSecretAction.outputs.JwtSecretKey }} >> .env
+          echo SELENIUM_HOST=${{ steps.myGetSecretAction.outputs.SeleniumHost }} >> .env
+          echo PYTHON_ENV=${{ steps.myGetSecretAction.outputs.PythonEnv }} >> .env
       - run: |
           sudo curl -L https://raw.githubusercontent.com/docker/compose-cli/main/scripts/install/install_linux.sh | sudo sh
           docker login azure --client-id ${{ secrets.REGISTRY_USERNAME }} --client-secret ${{ secrets.REGISTRY_PASSWORD }} --tenant-id ${{ secrets.REGISTRY_TENANT_ID }}
           docker context create aci myacicontext --resource-group ${{ secrets.RESOURCE_GROUP }}
           docker context use myacicontext
-          docker compose -f docker-compose.prod.yml up
+          docker compose -f docker-compose.prod.yml --env-file ./.env up
 
       # - uses: actions/checkout@v1
       #   env:
