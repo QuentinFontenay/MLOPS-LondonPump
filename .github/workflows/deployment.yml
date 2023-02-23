@@ -81,7 +81,7 @@ jobs:
           docker login azure --client-id ${{ secrets.REGISTRY_USERNAME }} --client-secret ${{ secrets.REGISTRY_PASSWORD }} --tenant-id ${{ secrets.REGISTRY_TENANT_ID }}
           docker context create aci myacicontext --resource-group ${{ secrets.RESOURCE_GROUP }}
           docker context use myacicontext
-          docker-compose -f docker-compose.prod.yml up
+          docker compose -f docker-compose.prod.yml up
 
       # - uses: actions/checkout@v1
       #   env:
