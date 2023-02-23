@@ -78,13 +78,12 @@ jobs:
           echo JWT_SECRET_KEY=${{ steps.myGetSecretAction.outputs.JwtSecretKey }} >> .env.production
           echo SELENIUM_HOST=${{ steps.myGetSecretAction.outputs.SeleniumHost }} >> .env.production
           echo PYTHON_ENV=${{ steps.myGetSecretAction.outputs.PythonEnv }} >> .env.production
-          cat .env.production
       - run: |
           sudo curl -L https://raw.githubusercontent.com/docker/compose-cli/main/scripts/install/install_linux.sh | sudo sh
           docker login azure --client-id ${{ secrets.REGISTRY_USERNAME }} --client-secret ${{ secrets.REGISTRY_PASSWORD }} --tenant-id ${{ secrets.REGISTRY_TENANT_ID }}
           docker context create aci myacicontext --resource-group ${{ secrets.RESOURCE_GROUP }}
           docker context use myacicontext
-          docker compose -f docker-compose.prod.yml --env-file ./.env.production up
+          docker compose -f docker-compose.prod.yml up
 
       # - uses: actions/checkout@v1
       #   env:

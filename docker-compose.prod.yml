@@ -1,6 +1,7 @@
 services:
   mongodb:
     image: londonfire.azurecr.io/mongo-londonfire:latest
+    env_file: ./.env.production
     deploy:
       resources:
         limits:
@@ -20,6 +21,7 @@ services:
 
   api:
     image: londonfire.azurecr.io/api:latest
+    env_file: ./.env.production
     ports:
       - "8000:8000"
     environment:
@@ -43,6 +45,7 @@ services:
   
   entrainementmodel:
     image: londonfire.azurecr.io/entrainement_model:latest
+    env_file: ./.env.production
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
