@@ -47,17 +47,10 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-          inlineScript: |
-            az --version
-            az container create --resource-group ${{ secrets.RESOURCE_GROUP }} --name mlops-londonpump --image ${{ secrets.REGISTRY_NAME }}.azurecr.io/londonfire:latest --dns-name-label mlops-londonpump --ports 80 --location ${{ secrets.LOCATION }} --registry-login-server ${{ secrets.REGISTRY_NAME }}.azurecr.io --registry-username ${{ secrets.REGISTRY_USERNAME }} --registry-password ${{ secrets.REGISTRY_PASSWORD }}
 
-      # - name: Delete groupe of container if exist
-      #   uses: azure/CLI@v1
-      #   with:
-      #     azcliversion: latest
-      #     inlineScript: |
-      #       az --version
-      #       az container delete --name mlops-londonpump --resource-group ${{ secrets.RESOURCE_GROUP }}
+      - name: Delete groupe of container if exist
+        run: |
+          az container create --resource-group ${{ secrets.RESOURCE_GROUP }} --name mlops-londonpump --image ${{ secrets.REGISTRY_NAME }}.azurecr.io/londonfire:latest --dns-name-label mlops-londonpump --ports 80 --location ${{ secrets.LOCATION }} --registry-login-server ${{ secrets.REGISTRY_NAME }}.azurecr.io --registry-username ${{ secrets.REGISTRY_USERNAME }} --registry-password ${{ secrets.REGISTRY_PASSWORD }}
 
       - name: Azure get vault
         uses: Azure/get-keyvault-secrets@v1
