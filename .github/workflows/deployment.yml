@@ -48,13 +48,13 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # - name: Delete groupe of container if exist
-      #   uses: azure/CLI@v1
-      #   with:
-      #     azcliversion: 2.29.2
-      #     inlineScript: |
-      #       az login --service-principal -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} --tenant ${{ secrets.REGISTRY_TENANT_ID }}
-      #       az container delete --name mlops-londonpump --resource-group ${{ secrets.RESOURCE_GROUP }} --yes --subscription ${{ secrets.SUBSCRIPTION_ID }}
+      - name: Delete groupe of container if exist
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.29.2
+          inlineScript: |
+            az login --service-principal -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} --tenant ${{ secrets.REGISTRY_TENANT_ID }}
+            az container delete --name mlops-londonpump --resource-group ${{ secrets.RESOURCE_GROUP }} --yes --subscription ${{ secrets.SUBSCRIPTION_ID }}
 
       - name: Azure get vault
         uses: Azure/get-keyvault-secrets@v1
@@ -82,6 +82,11 @@ jobs:
           echo PYTHON_ENV=${{ steps.myGetSecretAction.outputs.PythonEnv }} >> .env.production
 
       - name: Deploy to Azure Container Instance
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
         run: |
           sudo curl -L https://raw.githubusercontent.com/docker/compose-cli/main/scripts/install/install_linux.sh | sudo sh
           docker login azure --client-id ${{ secrets.REGISTRY_USERNAME }} --client-secret ${{ secrets.REGISTRY_PASSWORD }} --tenant-id ${{ secrets.REGISTRY_TENANT_ID }}
