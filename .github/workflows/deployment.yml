@@ -82,8 +82,7 @@ jobs:
           echo PYTHON_ENV=${{ steps.myGetSecretAction.outputs.PythonEnv }} >> .env.production
 
       - name: Deploy to Azure Container Instance
-        inlineScript: |
-          sudo curl -L https://raw.githubusercontent.com/docker/compose-cli/main/scripts/install/install_linux.sh | sudo sh
+        run: |
           docker login azure --client-id ${{ secrets.REGISTRY_USERNAME }} --client-secret ${{ secrets.REGISTRY_PASSWORD }} --tenant-id ${{ secrets.REGISTRY_TENANT_ID }}
           docker context create aci myacicontext --resource-group ${{ secrets.RESOURCE_GROUP }}
           docker context use myacicontext
