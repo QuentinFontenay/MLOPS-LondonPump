@@ -56,7 +56,7 @@ jobs:
             az --version
             az account show
             az group list
-            az container delete --name mlops-londonpump --resource-group ${{ secrets.RESOURCE_GROUP }}
+            az container delete --name mlops-londonpump --resource-group ${{ secrets.RESOURCE_GROUP }} --yes --subscription ${{ secrets.SUBSCRIPTION_ID }}
 
       - name: Azure get vault
         uses: Azure/get-keyvault-secrets@v1
