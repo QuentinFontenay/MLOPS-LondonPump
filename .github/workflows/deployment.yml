@@ -51,8 +51,9 @@ jobs:
       - name: Delete groupe of container if exist
         uses: azure/CLI@v1
         with:
-          azcliversion: 2.30.0
+          azcliversion: latest
           inlineScript: |
+            az --version
             az container delete --name mlops-londonpump --resource-group ${{ secrets.RESOURCE_GROUP }}
 
       - name: Azure get vault
