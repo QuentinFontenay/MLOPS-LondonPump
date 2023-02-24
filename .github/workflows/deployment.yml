@@ -49,8 +49,14 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Delete groupe of container if exist
-        run: |
-          az container delete --name mlops-londonpump --resource-group ${{ secrets.RESOURCE_GROUP }}
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.29.2
+          inlineScript: |
+            az --version
+            az account show
+            az group list
+            az container delete --name mlops-londonpump --resource-group ${{ secrets.RESOURCE_GROUP }}
 
       - name: Azure get vault
         uses: Azure/get-keyvault-secrets@v1
