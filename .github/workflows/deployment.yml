@@ -48,13 +48,13 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Delete groupe of container if exist
-        uses: azure/CLI@v1
-        with:
-          azcliversion: 2.29.2
-          inlineScript: |
-            az login --service-principal -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} --tenant ${{ secrets.REGISTRY_TENANT_ID }}
-            az container delete --name mlops-londonpump --resource-group ${{ secrets.RESOURCE_GROUP }} --yes --subscription ${{ secrets.SUBSCRIPTION_ID }}
+      # - name: Delete groupe of container if exist
+      #   uses: azure/CLI@v1
+      #   with:
+      #     azcliversion: 2.29.2
+      #     inlineScript: |
+      #       az login --service-principal -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} --tenant ${{ secrets.REGISTRY_TENANT_ID }}
+      #       az container delete --name mlops-londonpump --resource-group ${{ secrets.RESOURCE_GROUP }} --yes --subscription ${{ secrets.SUBSCRIPTION_ID }}
 
       - name: Azure get vault
         uses: Azure/get-keyvault-secrets@v1
