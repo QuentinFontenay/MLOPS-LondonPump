@@ -1,6 +1,7 @@
 services:
   mongodb:
     image: londonfire.azurecr.io/mongo-londonfire:latest
+    command: ["mongod", "--dbpath=/dbdata"]
     env_file: ./.env.production
     ports:
       - "27017:27017"
@@ -11,7 +12,7 @@ services:
           cpus: '0.1'
     restart: always
     volumes:
-      - londonfire:/data/db
+      - londonfire:/dbdata
     networks:
       - stack
 
