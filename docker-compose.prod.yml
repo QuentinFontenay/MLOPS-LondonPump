@@ -70,13 +70,13 @@ networks:
     driver: bridge
 
 volumes:
-  - name: volume-mongo
+  volume-mongo:
     driver: azure_file
     driver_opts:
         share_name: mongo
         storage_account_name: londonfire-mlops
 
-  - name: volume-modele
+  volume-modele:
     driver: azure_file
     driver_opts:
         share_name: modele
