@@ -1,12 +1,8 @@
 services:
   mongodb:
     image: londonfire.azurecr.io/mongo-londonfire:latest
-    command: ["mongod", "--dbpath=/dbdata", "--bind_ip", "0.0.0.0"]
+    # command: ["mongod", "--dbpath=/dbdata", "--bind_ip", "0.0.0.0"]
     env_file: ./.env.production
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
-      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
     ports:
       - "27017:27017"
     deploy:
