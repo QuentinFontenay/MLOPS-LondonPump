@@ -21,8 +21,8 @@ services:
     env_file: ./.env.production
     ports:
       - "8000:8000"
-    volumes:
-      - londonfire-mlops/modele:/data/modele
+    # volumes:
+    #   - londonfire-mlops/modele:/data/modele
     deploy:
       resources:
         limits:
@@ -36,8 +36,8 @@ services:
   entrainementmodel:
     image: londonfire.azurecr.io/entrainement_model:latest
     env_file: ./.env.production
-    volumes:
-      - londonfire-mlops/modele:/data/modele
+    # volumes:
+    #   - londonfire-mlops/modele:/data/modele
     deploy:
       resources:
         limits:
