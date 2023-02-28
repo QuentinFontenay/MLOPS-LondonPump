@@ -12,7 +12,7 @@ services:
           cpus: '0.1'
     restart: always
     volumes:
-      - volume-mongo:/dbdata
+      - londonfire:/dbdata
     networks:
       - stack
 
@@ -22,7 +22,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - volume-modele:/data/modele
+      - modele-ml:/data/modele
     deploy:
       resources:
         limits:
@@ -37,7 +37,7 @@ services:
     image: londonfire.azurecr.io/entrainement_model:latest
     env_file: ./.env.production
     volumes:
-      - volume-modele:/data/modele
+      - modele-ml:/data/modele
     deploy:
       resources:
         limits:
@@ -70,13 +70,13 @@ networks:
     driver: bridge
 
 volumes:
-  volume-mongo:
+  londonfire:
     driver: azure_file
     driver_opts:
-        share_name: mongo
-        storage_account_name: mongo
+        share_name: londonfire
+        storage_account_name: londonfire
 
-  volume-modele:
+  modele-ml:
     driver: azure_file
     driver_opts:
         share_name: modele-ml
