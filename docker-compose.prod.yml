@@ -80,4 +80,4 @@ volumes:
     driver: azure_file
     driver_opts:
         share_name: londonfiremodele
-        storage_account_name: londonfiremodele
+        storage_account_name: londonfire
