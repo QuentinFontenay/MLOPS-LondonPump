@@ -73,8 +73,11 @@ volumes:
   - name: volume-mongo
     driver: azure_file
     driver_opts:
-        share_name: londonfire-mlops/mongo
+        share_name: mongo
+        storage_account_name: londonfire-mlops
+
   - name: volume-modele
     driver: azure_file
     driver_opts:
-        share_name: londonfire-mlops/modele
+        share_name: modele
+        storage_account_name: londonfire-mlops
