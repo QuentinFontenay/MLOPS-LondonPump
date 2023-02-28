@@ -22,7 +22,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - modele:/data/modele
+      - londonfiremodele:/data/modele
     deploy:
       resources:
         limits:
@@ -37,7 +37,7 @@ services:
     image: londonfire.azurecr.io/entrainement_model:latest
     env_file: ./.env.production
     volumes:
-      - modele:/data/modele
+      - londonfiremodele:/data/modele
     deploy:
       resources:
         limits:
@@ -76,8 +76,8 @@ volumes:
         share_name: londonfire
         storage_account_name: londonfire
 
-  modele:
+  londonfiremodele:
     driver: azure_file
     driver_opts:
-        share_name: modele
-        storage_account_name: modele
+        share_name: londonfiremodele
+        storage_account_name: londonfiremodele
