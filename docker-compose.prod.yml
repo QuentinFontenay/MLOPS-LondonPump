@@ -74,8 +74,10 @@ volumes:
     driver: azure_file
     driver_opts:
         share_name: mongo
+        storage_account_name: mongo
 
   volume-modele:
     driver: azure_file
     driver_opts:
         share_name: modele-ml
+        storage_account_name: modele-ml
