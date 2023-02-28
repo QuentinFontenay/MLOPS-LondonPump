@@ -71,10 +71,10 @@ networks:
 
 volumes:
   - name: volume-mongo
-    azureFile:
-      secretName: londonfire-mlops
-      shareName: mongo
+    driver: azure_file
+    driver_opts:
+        share_name: londonfire-mlops/mongo
   - name: volume-modele
-    azureFile:
-      secretName: londonfire-mlops
-      shareName: modele
+    driver: azure_file
+    driver_opts:
+        share_name: londonfire-mlops/modele
