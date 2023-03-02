@@ -1,5 +1,4 @@
-from joblib import dump
-import pickle
+from joblib import dump, load
 from cleaning_data import cleaned_data
 from training.train_test import train_test_split_index, train_test_split_incident
 from training.preprocess_model_time import remove_datetime_var, remove_variables, reg_var_type, \
@@ -10,11 +9,14 @@ from utils.helpers import path_file
 from utils.mongodb import connect_to_mongo
 import pandas as pd
 from datetime import datetime
+import os
+# import shutil
+
 # get dataset
 df = cleaned_data()
 
 # import pandas as pd                           # pour tests seulement (récupérer fichiel en local)
-#df = pd.read_pickle('./base_ml.pkl')
+# df = pd.read_pickle(path_file() + '/base_ml.pkl')
 
 # keep copy of full dataset
 df_full = df.copy()
@@ -38,14 +40,40 @@ db.riskStations.insert_one(risk_stations)
 best_param_C, mae_train, mae_test = training_model(X_train, y_train, X_test, y_test)
 model, pred_train, pred_test, metrics = pred_scores_model(best_param_C, X_train, y_train, X_test, y_test)
 
-# save files and model 
-dump(model, path_file() + '/model_reg_attendance_time.joblib')                                             # modele
-dump(scaler_features, path_file() + '/reg_scaler.pkl')                                                     # standard scaler
-dump(list(df.drop('AttendanceTimeSeconds', axis = 1)), path_file() + '/reg_df_columns.pkl')                # column list
-dump(dict(df.drop('AttendanceTimeSeconds', axis=1).dtypes), path_file() + '/reg_df_columns_format.pkl')    # columns format
-dump(features.columns, path_file() + '/reg_data_dummies_columns.pkl')                                      # features columns after get_dummies
-# pd.DataFrame(topslowest_code).to_csv(path_file() + 'topslowest_code.csv', sep=',', index=False)           # stations list (highest attendance time)
-# with open(path_file() + 'reg_scores.pkl', 'wb') as f:                                                     # metrics for the model
-#     pickle.dump(metrics, f)
-# with open(save_location + 'reg_scores.pkl', 'rb') as f:
-#     metrics_restore = pickle.load(f)
+
+# model trained ID : aaaammjjhhmmss
+model_train_time = str(datetime.now())[:-7].replace('-', '').replace(' ','').replace(':', '')
+
+# save 'Mean AE test' to scores file
+scores = load(path_file() + '/archives/scores_models_mae.pkl')
+scores[model_train_time] = metrics['Mean AE test']
+dump(scores, path_file() + '/archives/scores_models_mae.pkl')
+
+# ensure 'last_run' is empty before saving last training files
+for file in os.listdir(path_file() + '/last_run/'):
+    os.remove(path_file() + '/last_run/' + file)
+
+# save last training files (model + usEful files) to last_run directory
+last_run_path = path_file() + '/last_run/' + model_train_time                                               # location + datehour at the beginning of the file saved
+dump(model, last_run_path + 'PassiveAggressiveRegressor_mlops.joblib')                                      # modele
+dump(scaler_features, last_run_path + 'reg_scaler.pkl')                                                     # standard scaler
+dump(list(df.drop('AttendanceTimeSeconds', axis = 1)), last_run_path + 'reg_df_columns.pkl')                # column list
+dump(dict(df.drop('AttendanceTimeSeconds', axis=1).dtypes), last_run_path + 'reg_df_columns_format.pkl')    # columns format
+dump(features.columns, last_run_path + 'reg_data_dummies_columns.pkl')                                      # features columns after get_dummies
+
+# # solution alternative à airflow ## AU CAS OÙ !!
+
+# # si le modèle est meilleur que les précédents modèles (MAE moindre)
+# # copier les fichiers du dernier entrainement vers le dossier principal (en supprimant réf du modèle) pour utilisation par l'API
+# if scores[model_train_time] <= min(scores.values()):
+#     for f in os.listdir(path_file() + '/last_run/'):
+#         src = path_file() + '/last_run/' + f
+#         dst = path_file() + '/' + f[len(model_train_time):]
+#         shutil.copy2(src, dst)
+
+# # dans tous les cas, déplacer ces fichiers vers les archives
+# for f in os.listdir(path_file() + '/last_run/'):
+#     src = path_file() + '/last_run/' + f
+#     dst = path_file() + '/archives/' + f
+#     shutil.copy2(src, dst)                      # copier vers les archives
+#     os.remove(src)                              # supprimer la source
