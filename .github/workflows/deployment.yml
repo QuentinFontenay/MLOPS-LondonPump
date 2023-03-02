@@ -65,21 +65,20 @@ jobs:
 
       - name: create env file
         run: |
-          touch .env.production
-          echo MONGO_INITDB_ROOT_USERNAME=${{ steps.myGetSecretAction.outputs.MongoInitDbRootUsername }} >> .env.production
-          echo MONGO_INITDB_ROOT_PASSWORD=${{ steps.myGetSecretAction.outputs.MongoInitDbRootPassword }} >> .env.production
-          echo MONGO_INITDB_DATABASE=${{ steps.myGetSecretAction.outputs.MongoDbInitDatabase }} >> .env.production
-          echo MONGO_INITDB_HOST=${{ steps.myGetSecretAction.outputs.MongoInitDbHost }} >> .env.production
-          echo MONGO_LONDON_FIRE_USER=${{ steps.myGetSecretAction.outputs.MongoDbLondonFireUser }} >> .env.production
-          echo MONGO_LONDON_FIRE_PASSWORD=${{ steps.myGetSecretAction.outputs.MongoDbLondonFirePassword }} >> .env.production
-          echo DATABASE_URL=${{ steps.myGetSecretAction.outputs.DatabaseUrl }} >> .env.production
-          echo VISUAL_CROSSING_KEY=${{ steps.myGetSecretAction.outputs.VisualCrossingKey }} >> .env.production
-          echo ACCESS_TOKEN_EXPIRES_IN=${{ steps.myGetSecretAction.outputs.AccessTokenExpire }} >> .env.production
-          echo REFRESH_TOKEN_EXPIRES_IN=${{ steps.myGetSecretAction.outputs.RefreshTokenExpire }} >> .env.production
-          echo JWT_ALGORITHM=${{ steps.myGetSecretAction.outputs.JwtAlgorithm }} >> .env.production
-          echo JWT_SECRET_KEY=${{ steps.myGetSecretAction.outputs.JwtSecretKey }} >> .env.production
-          echo SELENIUM_HOST=${{ steps.myGetSecretAction.outputs.SeleniumHost }} >> .env.production
-          echo PYTHON_ENV=${{ steps.myGetSecretAction.outputs.PythonEnv }} >> .env.production
+          export MONGO_INITDB_ROOT_USERNAME=${{ steps.myGetSecretAction.outputs.MongoInitDbRootUsername }}
+          export MONGO_INITDB_ROOT_PASSWORD=${{ steps.myGetSecretAction.outputs.MongoInitDbRootPassword }}
+          export MONGO_INITDB_DATABASE=${{ steps.myGetSecretAction.outputs.MongoDbInitDatabase }}
+          export MONGO_INITDB_HOST=${{ steps.myGetSecretAction.outputs.MongoInitDbHost }}
+          export MONGO_LONDON_FIRE_USER=${{ steps.myGetSecretAction.outputs.MongoDbLondonFireUser }}
+          export MONGO_LONDON_FIRE_PASSWORD=${{ steps.myGetSecretAction.outputs.MongoDbLondonFirePassword }}
+          export DATABASE_URL=${{ steps.myGetSecretAction.outputs.DatabaseUrl }}
+          export VISUAL_CROSSING_KEY=${{ steps.myGetSecretAction.outputs.VisualCrossingKey }}
+          export ACCESS_TOKEN_EXPIRES_IN=${{ steps.myGetSecretAction.outputs.AccessTokenExpire }}
+          export REFRESH_TOKEN_EXPIRES_IN=${{ steps.myGetSecretAction.outputs.RefreshTokenExpire }}
+          export JWT_ALGORITHM=${{ steps.myGetSecretAction.outputs.JwtAlgorithm }}
+          export JWT_SECRET_KEY=${{ steps.myGetSecretAction.outputs.JwtSecretKey }}
+          export SELENIUM_HOST=${{ steps.myGetSecretAction.outputs.SeleniumHost }}
+          export PYTHON_ENV=${{ steps.myGetSecretAction.outputs.PythonEnv }}
 
       - name: Connect to Azure Container Registry (ACR)
         uses: azure/docker-login@v1
