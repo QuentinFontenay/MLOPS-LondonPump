@@ -14,9 +14,6 @@ def  train_test_split_index(data, test_size = 0.2):
         tts_index_train : index of rows to be allocated to train set
 
     '''
-    
-    # A SUPPRIMER APRÈS CONTRÔLE BON FONCTIONNEMENT !!!
-    np.random.seed(42)     # Reseed the singleton RandomState instance (to have same data as original model)
 
     # build sorted incidents list
     tts_inc_list = data['IncidentNumber'].unique().tolist()
