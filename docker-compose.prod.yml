@@ -31,7 +31,7 @@ services:
       - stack
     depends_on:
       mongodb:
-        condition: service_completed_successfully
+        condition: service_healthy
   
   entrainementmodel:
     image: londonfire.azurecr.io/entrainement_model:latest
