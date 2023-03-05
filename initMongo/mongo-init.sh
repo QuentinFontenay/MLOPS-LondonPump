@@ -1,5 +1,6 @@
 echo "########### Waiting for MongoDB to initialize ###########"
 COUNTER=0
+set -e
 until mongo --host localhost --quiet
 do
   sleep 1
