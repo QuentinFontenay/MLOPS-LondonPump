@@ -10,6 +10,8 @@ services:
           memory: 2g
           cpus: '0.1'
     restart: always
+    healthcheck:
+      test: "exit 0"
     volumes:
       - londonfire:/dbdata
     networks:
@@ -31,7 +33,7 @@ services:
       - stack
     depends_on:
       mongodb:
-        condition: service_healthy
+        condition: service_started
   
   entrainementmodel:
     image: londonfire.azurecr.io/entrainement_model:latest
