@@ -10,8 +10,8 @@ services:
           memory: 2g
           cpus: '0.1'
     restart: always
-    healthcheck:
-      test: "exit 0"
+    # healthcheck:
+    #   test: "exit 0"
     volumes:
       - londonfire:/dbdata
     networks:

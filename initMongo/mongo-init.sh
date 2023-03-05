@@ -1,15 +1,8 @@
-echo "########### Waiting for MongoDB to initialize ###########"
-COUNTER=0
 set -e
-until mongo --host localhost --quiet
+echo "########### Waiting for MongoDB to initialize ###########"
+until mongo --host localhost --eval "print(\"waited for connection\")"
 do
   sleep 1
-  COUNTER=$((COUNTER+1))
-  if [ ${COUNTER} -eq 30 ]; then
-    echo "MongoDB did not initialize within 30 seconds, exiting"
-    exit 2
-  fi
-  echo "Waiting for MongoDB to initialize... ${COUNTER}/30"
 done
 
 echo "########### Check if database is already init ###########"
