@@ -66,6 +66,7 @@ jobs:
       - name: create env file
         run: |
           touch .env.production
+          echo ${{ steps.myGetSecretAction.outputs.DatabaseUrl }}
           echo MONGO_INITDB_ROOT_USERNAME=${{ steps.myGetSecretAction.outputs.MongoInitDbRootUsername }} >> .env.production
           echo MONGO_INITDB_ROOT_PASSWORD=${{ steps.myGetSecretAction.outputs.MongoInitDbRootPassword }} >> .env.production
           echo MONGO_INITDB_DATABASE=${{ steps.myGetSecretAction.outputs.MongoDbInitDatabase }} >> .env.production
