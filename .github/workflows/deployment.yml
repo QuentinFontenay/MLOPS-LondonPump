@@ -66,14 +66,13 @@ jobs:
       - name: create env file
         run: |
           touch .env.production
-          echo ${{ steps.myGetSecretAction.outputs.DatabaseUrl }}
           echo MONGO_INITDB_ROOT_USERNAME=${{ steps.myGetSecretAction.outputs.MongoInitDbRootUsername }} >> .env.production
           echo MONGO_INITDB_ROOT_PASSWORD=${{ steps.myGetSecretAction.outputs.MongoInitDbRootPassword }} >> .env.production
           echo MONGO_INITDB_DATABASE=${{ steps.myGetSecretAction.outputs.MongoDbInitDatabase }} >> .env.production
           echo MONGO_INITDB_HOST=${{ steps.myGetSecretAction.outputs.MongoInitDbHost }} >> .env.production
           echo MONGO_LONDON_FIRE_USER=${{ steps.myGetSecretAction.outputs.MongoDbLondonFireUser }} >> .env.production
           echo MONGO_LONDON_FIRE_PASSWORD=${{ steps.myGetSecretAction.outputs.MongoDbLondonFirePassword }} >> .env.production
-          echo DATABASE_URL=${{ steps.myGetSecretAction.outputs.DatabaseUrl }} >> .env.production
+          echo MONGO_DATABASE_URL=${{ steps.myGetSecretAction.outputs.DatabaseUrl }} >> .env.production
           echo VISUAL_CROSSING_KEY=${{ steps.myGetSecretAction.outputs.VisualCrossingKey }} >> .env.production
           echo ACCESS_TOKEN_EXPIRES_IN=${{ steps.myGetSecretAction.outputs.AccessTokenExpire }} >> .env.production
           echo REFRESH_TOKEN_EXPIRES_IN=${{ steps.myGetSecretAction.outputs.RefreshTokenExpire }} >> .env.production
