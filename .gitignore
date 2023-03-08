@@ -133,3 +133,7 @@ dmypy.json
 
 # Data directory
 data/
+
+
+# Airflow logs
+airflow/logs
