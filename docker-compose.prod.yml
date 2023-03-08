@@ -10,8 +10,11 @@ services:
           memory: 2g
           cpus: '0.1'
     restart: always
-    # healthcheck:
-    #   test: "exit 0"
+    healthcheck:
+      test: "/usr/bin/mongo --eval 'db.riskStations.count()'"
+      interval: 4s
+      timeout: 3s
+      retries: 30
     volumes:
       - londonfire:/dbdata
     networks:
@@ -33,7 +36,7 @@ services:
       - stack
     depends_on:
       mongodb:
-        condition: service_started
+        condition: service_healthy
   
   entrainementmodel:
     image: londonfire.azurecr.io/entrainement_model:latest
