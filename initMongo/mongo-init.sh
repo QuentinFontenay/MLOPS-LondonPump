@@ -1,14 +1,11 @@
-set -e
+#!/bin/bash
+
 echo "########### Waiting for MongoDB to initialize ###########"
-until mongo --host localhost --eval "print(\"waited for connection\")"
-do
-  sleep 1
-done
+
+while ! nc -z localhost 27017 </dev/null; do sleep 2; done
 
 echo "########### Check if database is already init ###########"
-count=$(mongo --quiet -u $MONGO_INITDB_ROOT_USERNAME -p $MONGO_INITDB_ROOT_PASSWORD --eval "db.riskStations.count()")
-echo $count
-if [ $count > 0 ]; then
+if mongo --quiet -u $MONGO_INITDB_ROOT_USERNAME -p $MONGO_INITDB_ROOT_PASSWORD --eval "db.riskStations.count()" > /dev/null; then
     echo "Database is init"
     exit 2
 fi
