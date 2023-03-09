@@ -67,7 +67,6 @@ services:
   airflow:
     image : londonfire.azurecr.io/airflow-londonfire:latest
     env_file: ./.env.production
-    command: standalone
     deploy:
       resources:
         limits:
