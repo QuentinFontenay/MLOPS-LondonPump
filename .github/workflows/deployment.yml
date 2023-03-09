@@ -33,7 +33,37 @@ jobs:
         pip install -r api/requirements.txt
     - name: Run pytest
       run: | 
-        pytest api/tests/
+        pytest --disable-warnings api/tests/
+    
+  # test-entrainement:
+  #   env:
+  #     DATABASE_URL: mongodb://localhost:27017/test?retryWrites=true&w=majority
+  #     MONGO_INITDB_DATABASE: test
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: Start MongoDB
+  #     uses: supercharge/mongodb-github-action@1.8.0
+  #     with:
+  #       mongodb-version: "4.2"
+  #   - name: Set up Python 3.10
+  #     uses: actions/setup-python@v3
+  #     with:
+  #       python-version: "3.10"
+  #   - uses: actions/cache@v3
+  #     id: cache
+  #     with:
+  #       path: ~/.cache/pip
+  #       key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.*') }}
+  #       restore-keys: | 
+  #         ${{ runner.os }}-pip-
+  #   - name: Install dependencies
+  #     run: |
+  #       python -m pip install --upgrade pip
+  #       pip install -r entrainement/requirements.txt
+  #   - name: Run pytest
+  #     run: | 
+  #       pytest --disable-warnings entrainement/tests/
 
   build-and-deploy:
     # needs: test-api
@@ -86,6 +116,16 @@ jobs:
           login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and push Docker images
+        run: |
+          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/api:${{ github.sha }} -f api/Dockerfile
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/api:${{ github.sha }}
+          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/entrainement:${{ github.sha }} -f entrainement/Dockerfile
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/entrainement:${{ github.sha }}
+          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/mongo-londonfire:${{ github.sha }} -f initMongo/Dockerfile
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/mongo-londonfire:${{ github.sha }}
+          
 
       - name: Deploy to Azure Container Instance
         run: |
