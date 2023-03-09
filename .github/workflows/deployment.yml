@@ -119,12 +119,12 @@ jobs:
 
       - name: Build and push Docker images
         run: |
-          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/api:${{ github.sha }} -f api/Dockerfile
-          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/api:${{ github.sha }}
-          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/entrainement:${{ github.sha }} -f entrainement/Dockerfile
-          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/entrainement:${{ github.sha }}
-          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/mongo-londonfire:${{ github.sha }} -f initMongo/Dockerfile
-          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/mongo-londonfire:${{ github.sha }}
+          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/api:latest -f api/Dockerfile
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/api:latest
+          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/entrainement:latest -f entrainement/Dockerfile
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/entrainement:latest
+          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/mongo-londonfire:latest -f initMongo/Dockerfile
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/mongo-londonfire:latest
           
 
       - name: Deploy to Azure Container Instance
