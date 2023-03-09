@@ -1,6 +1,9 @@
 services:
   mongodb:
-    image: mongo
+    image: mongo-londonfire:1.0.0
+    build:
+      context: .
+      dockerfile: ./initMongo/Dockerfile
     ports:
       - "27017:27017"
     restart: always
@@ -67,6 +70,27 @@ services:
     shm_size: '2g'
     networks:
       - stack
+
+  airflow:
+    image : airflow-londonfire:1.0.0
+    build:
+      context: .
+      dockerfile: ./airflow/Dockerfile
+    command: standalone
+    ports:
+      - "8080:8080"
+    environment:
+      - _AIRFLOW_DB_UPGRADE=true
+      - _AIRFLOW_WWW_USER_CREATE=true
+      - _AIRFLOW_WWW_USER_USERNAME=${_AIRFLOW_WWW_USER_USERNAME}
+      - _AIRFLOW_WWW_USER_PASSWORD=${_AIRFLOW_WWW_USER_PASSWORD}
+      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=false
+    volumes:
+      - ./data/modele:/data/modele
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+    networks:
+      - stack    
 
 networks:
   stack:

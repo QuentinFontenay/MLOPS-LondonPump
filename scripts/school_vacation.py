@@ -11,7 +11,7 @@ import time
 import re
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
-load_dotenv()
+load_dotenv('../.env.production')
 
 def get_driver():
     options = webdriver.ChromeOptions()

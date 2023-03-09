@@ -4,11 +4,12 @@ def remove_dartford(data):
     '''
 
     # incidents where Dartford is attending
-    dartford_incident = list(data[data['DeployedFromStation_Name'] == 'Dartford']['IncidentNumber'])[0]
+    dartford_incident = list(data[data['DeployedFromStation_Name'] == 'Dartford']['IncidentNumber'])
+    if dartford_incident:
+        dartford_incident = dartford_incident[0]
+        # removing incidents
+        data = data[data['IncidentNumber'] != dartford_incident]
     
-    # removing incidents
-    data = data[data['IncidentNumber'] != dartford_incident]
-
     return data
 
 
