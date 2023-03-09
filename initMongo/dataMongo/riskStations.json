@@ -1,0 +1,51 @@
+[
+    {
+        "created_at": {
+            "$date": {
+                "$numberLong": "1676114715149"
+            }
+        },
+        "stations": [
+            {
+                "code": "A38",
+                "name": "Mill Hill"
+            },
+            {
+                "code": "E23",
+                "name": "East Greenwich"
+            },
+            {
+                "code": "E40",
+                "name": "Sidcup"
+            },
+            {
+                "code": "E41",
+                "name": "Orpington"
+            },
+            {
+                "code": "E42",
+                "name": "Biggin Hill"
+            },
+            {
+                "code": "F40",
+                "name": "Wennington"
+            },
+            {
+                "code": "G30",
+                "name": "Wembley"
+            },
+            {
+                "code": "G32",
+                "name": "Ruislip"
+            },
+            {
+                "code": "G40",
+                "name": "Hayes"
+            },
+            {
+                "code": "G56",
+                "name": "Heathrow"
+            }
+        ]
+    }
+]

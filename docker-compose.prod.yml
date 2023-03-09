@@ -1,0 +1,82 @@
+services:
+  mongodb:
+    image: londonfire.azurecr.io/mongo-londonfire:latest
+    env_file: ./.env.production
+    ports:
+      - "27017:27017"
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+          cpus: '0.1'
+    restart: always
+    volumes:
+      - londonfire:/dbdata
+    networks:
+      - stack
+
+  api:
+    image: londonfire.azurecr.io/api:latest
+    env_file: ./.env.production
+    ports:
+      - "8000:8000"
+    volumes:
+      - londonfiremodele:/data/modele
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+          cpus: '0.1'
+    networks:
+      - stack
+    depends_on:
+      - mongodb
+  
+  entrainementmodel:
+    image: londonfire.azurecr.io/entrainement_model:latest
+    env_file: ./.env.production
+    volumes:
+      - londonfiremodele:/data/modele
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+          cpus: '0.1'
+    networks:
+      - stack
+    depends_on:
+      - mongodb
+      - selenium
+  
+  selenium:
+    image: selenium/standalone-chrome:108.0
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+          cpus: '0.1'
+    ports:
+      - "4444:4444"
+    environment:
+      - SE_NODE_MAX_SESSIONS=30
+      - SE_NODE_OVERRIDE_MAX_SESSIONS=true
+      - SE_VNC_NO_PASSWORD=1
+    networks:
+      - stack
+
+networks:
+  stack:
+    driver: bridge
+
+volumes:
+  londonfire:
+    driver: azure_file
+    driver_opts:
+        share_name: londonfire
+        storage_account_name: londonfire
+
+  londonfiremodele:
+    driver: azure_file
+    driver_opts:
+        share_name: londonfiremodele
+        storage_account_name: londonfire

@@ -82,13 +82,11 @@ services:
     environment:
       - _AIRFLOW_DB_UPGRADE=true
       - _AIRFLOW_WWW_USER_CREATE=true
-      - _AIRFLOW_WWW_USER_USERNAME=${_AIRFLOW_WWW_USER_USERNAME}
-      - _AIRFLOW_WWW_USER_PASSWORD=${_AIRFLOW_WWW_USER_PASSWORD}
+      - _AIRFLOW_WWW_USER_USERNAME=${AIRFLOW_USERNAME}
+      - _AIRFLOW_WWW_USER_PASSWORD=${AIRFLOW_PASSWORD}
       - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=false
     volumes:
       - ./data/modele:/data/modele
-      - ./airflow/dags:/opt/airflow/dags
-      - ./airflow/logs:/opt/airflow/logs
     networks:
       - stack    
 
