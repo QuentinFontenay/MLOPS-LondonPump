@@ -2,7 +2,7 @@ import pandas as pd
 import os
 from utils.mongodb import connect_to_mongo
 from utils.selenium import get_driver, get_download_link, get_data_tabs
-from datetime import datetime
+from datetime import datetime, timedelta
 import warnings
 warnings.filterwarnings("ignore")
 from selenium import webdriver
@@ -10,6 +10,80 @@ import pandas as pd
 from selenium.webdriver.common.by import By
 import requests
 import io
+from pymongo import mongo_client
+import time
+import re
+
+def update_holidays_db():
+    # connect to mongo
+    client = mongo_client.MongoClient(
+        os.environ.get('DATABASE_URL'), serverSelectionTimeoutMS=5000)
+
+    try:
+        conn = client.server_info()
+        print(f'Connected to MongoDB {conn.get("version")}')
+    except Exception:
+        print("Unable to connect to the MongoDB server.")
+
+    db = client[os.environ.get('MONGO_INITDB_DATABASE')]
+    school_vacation = db.schoolVacations
+
+    driver = get_driver()
+    # Accès à la page
+    driver.get('https://publicholidays.co.uk/school-holidays/england/barking-and-dagenham/')
+    # Agrandissement de la fenêtre
+    driver.minimize_window()
+    # accepter les cookies
+    time.sleep(2) # temporisation pour attendre que la fenêtre soit affichée
+    driver.find_element(By.CSS_SELECTOR, '.css-6napma.css-6napma.css-6napma.css-6napma .qc-cmp2-footer .qc-cmp2-summary-buttons button:last-of-type').click()
+    r = re.compile(r"[0-9]{1,2} [A-Za-z]{3} [0-9]{4}")
+    holidays_periods = []
+
+    for i in driver.find_elements(By.CLASS_NAME, 'odd'):
+        holiday = r.findall(i.text)
+        if len(holiday) == 2:
+            holidays_periods.append(holiday)
+
+    for i in driver.find_elements(By.CLASS_NAME, 'even'):
+        holiday = r.findall(i.text)
+        if len(holiday) == 2:
+            holidays_periods.append(holiday)
+    driver.close()
+    # Créer un df des plages de vacances scolaires
+    holidays_df = pd.DataFrame(holidays_periods).rename({0: "beg", 1: "end"}, axis = 1)
+    holidays_df = holidays_df.astype('datetime64')
+    
+    # Créer la liste des jours de vacances scolaires
+    holidays_list = []
+    for i in holidays_df.index:
+        day = holidays_df.loc[i]['beg']
+        while day <= holidays_df.loc[i]['end']:
+            holidays_list.append(day)
+            day += timedelta(1)
+
+    holidays_list_df = pd.DataFrame(holidays_list)
+    holidays_list_df = holidays_list_df.rename({0: "date"}, axis=1)
+    holidays_list_df['weekday'] = holidays_list_df['date'].apply(lambda x: x.weekday())
+    final_list = holidays_list_df[holidays_list_df['weekday']<5]['date']
+    final_list = final_list.sort_values()
+    year_vacation = list(school_vacation.find({}, { 'year': 1 }))
+    old_year = 0
+    array = []
+    for index, date_vacation in final_list.items():
+        if any(obj['year'] == date_vacation.year for obj in year_vacation) == False:
+            if date_vacation.year > old_year:
+                if len(array) > 0:
+                    object = { "year": old_year, "dates": array }
+                    school_vacation.insert_one(object)
+                    print("Inserted year= %s" % old_year)
+                    result = school_vacation.delete_one({"year": old_year - 4})
+                    if (result == 1):
+                        print("Deleted year= %s" % (old_year - 4))
+                    array = []
+                old_year = date_vacation.year
+            if date_vacation.year == old_year:
+                array.append(date_vacation)
+
 
 def get_holidays():
     '''
@@ -71,11 +145,8 @@ def get_traffic():
     '''
     # initialize driver
     driver = get_driver()
-    driver.get('https://www.tomtom.com/traffic-index/london-traffic/')
-    driver.find_element(By.CLASS_NAME, 'CookieBar__button').click()
-    live_traffic = driver.find_elements(By.CLASS_NAME, 'live-number')
-    congestion_now = live_traffic[0].text
-    congestion_now = int(congestion_now.replace('%', ''))/100
+    driver.get('https://web.archive.org/web/20221110181646/https://www.tomtom.com/traffic-index/london-traffic/')
+    driver.find_element(By.CLASS_NAME, 'CookieBar__button--red').click()
     elt = driver.find_elements(By.TAG_NAME, 'li')
     congestion_data_year_3, congestion_data_year_percentages_3 = get_data_tabs(12, driver, elt, 0)
     congestion_data_year_2, congestion_data_year_percentages_2 = get_data_tabs(13, driver, elt, 1)
@@ -101,24 +172,34 @@ def get_traffic():
         congestion_data['year'] = year
         historical_congestion_data = pd.concat([historical_congestion_data, congestion_data]).reset_index(drop=True)
     driver.close()
+    # duplicate last actual data for missing years until current year
+    max_year = int(historical_congestion_data['year'].unique().max())
+    while max_year < datetime.now().year:
+        missing_year = max_year + 1
+        missing_year_congestion = historical_congestion_data[historical_congestion_data['year'] == str(max_year)]
+        missing_year_congestion['year'] = str(missing_year)
+        historical_congestion_data = pd.concat([missing_year_congestion, historical_congestion_data]).reset_index(drop=True)
+        max_year += 1
 
     return historical_congestion_data
 
-def get_weather(date_min, date_max):
+def get_weather():
     '''
     get data from VisualCrossing API : https://www.visualcrossing.com/
-    London weather data by hour (24 values for 1 day), between 2 dates
-
-    inputs = 2 dates (string : 'yyyy-mm-dd') :
-        date_min = beginning of period to get from API 
-        date_max = end of period to get from API
+    London weather data by hour (24 values for 1 day)
+    For current year (until end of last month) + previous 3 years
 
     returns:
-        dataframe ready to merge with main dataframe 
+    dataframe ready to merge with main dataframe 
     '''
 
     api_key = os.getenv('VISUAL_CROSSING_KEY')
-    
+
+    # weather : get previous 3 years + current year
+    date_min = f'{datetime(datetime.now().year - 3, 1, 1):%Y-%m-%d}'
+    end_previous_month = datetime.now().replace(day=1) - timedelta(days=1)
+    date_max = f'{end_previous_month:%Y-%m-%d}'
+
     y_min_input, m_min_input, d_min_input = int(date_min[:4]), date_min[5:7], date_min[8:]
     y_max_input, m_max_input, d_max_input = int(date_max[:4]), date_max[5:7], date_max[8:]
     
@@ -189,10 +270,7 @@ def extract():
     holidays = get_holidays()
     traffic = get_traffic()
     stations = get_stations()
-    meteo_min_date = '2018-01-01'
-    end_previous_month = datetime.datetime.now().replace(day=1) - datetime.timedelta(days=1)
-    meteo_max_date = f'{end_previous_month:%Y-%m-%d}'
-    meteo = get_weather(date_min=meteo_min_date, date_max= meteo_max_date)
+    meteo = get_weather()
 
     return inc, mob, stations, meteo, holidays, traffic
 

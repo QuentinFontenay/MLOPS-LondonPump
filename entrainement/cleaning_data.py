@@ -7,7 +7,7 @@ from cleaning.missing_values import missing_travel_time, missing_special_service
     missing_date_and_time_left, missing_date_of_call, missing_delay_description, \
     missing_deployed_from_station, missing_tournout_time_seconds
 from cleaning.pumps_count import total_pumps_out, pumps_available, rows_delete
-from cleaning.read_merge_datasets import extract, merge_datasets
+from cleaning.read_merge_datasets import extract, merge_datasets, update_holidays_db
 from cleaning.variables_format import convert_date_and_time, datetime_variables, format_rename_columns, remove_variables
 
 
@@ -17,6 +17,7 @@ def cleaned_data():
 
     returns cleaned data with new variables
     '''
+    update_holidays_db() # store new holidays known in db
     inc, mob, station_pos, weather, holidays, traffic = extract()
     inc = convert_gps(data= inc)
     mob = create_appliance(data= mob)
@@ -47,5 +48,5 @@ def cleaned_data():
     df = add_weather(df, weather)
     df = add_holidays(df, holidays)
     df = add_traffic(df, traffic)
-
+    
     return df

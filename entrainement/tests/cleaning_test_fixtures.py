@@ -1,10 +1,7 @@
-
 import pytest
-import pandas as pd
-import numpy as np
-import os
+from datetime import datetime
 
-# importer les fonctions à tester (dans package 'clean_data_add_features' : voir paramétrage dans le fichier de test)
+# importer les fonctions à tester
 from cleaning.consistency_checks import num_pumps_attending, num_stations_pump_attending, speed_over_60
 from cleaning.create_variables import create_appliance, create_mobilised_rank, incident_type_category
 from cleaning.data_removal import remove_dartford, remove_unused
@@ -18,56 +15,22 @@ from cleaning.read_merge_datasets import extract, merge_datasets
 from cleaning.variables_format import convert_date_and_time, datetime_variables, format_rename_columns, remove_variables
 
 
-# emplacement des données originales du projet
-data_loc_tests = "../../data"
-
-
-# fixtures des variables de base
-
-@pytest.fixture
-def station_pos():
-    _, _, station_pos, _, _, _ = extract(path_to_data = data_loc_tests)
-    return station_pos
-
-@pytest.fixture
-def weather():
-    _, _, _, weather, _, _ = extract(path_to_data = data_loc_tests)
-    return weather
-
-@pytest.fixture
-def holidays():
-    _, _, _, _, holidays, _ = extract(path_to_data = data_loc_tests)
-    return holidays
-
-@pytest.fixture
-def traffic():
-    _, _, _, _, _, traffic = extract(path_to_data = data_loc_tests)
-    return traffic
-
-@pytest.fixture
-def inc():
-    inc = pd.read_csv(os.path.join(data_loc_tests, "test_clean_data_add_features_inc.csv"), index_col=0)
-    # création anomalie pour tests ultérieurs de fonctions num_pumps_attending & num_stations_pump_attending
-    inc['NumPumpsAttending'].loc[165558] = 250              # sur incident 101105-01082019 => vs 2
-    inc['NumStationsWithPumpsAttending'].loc[165558] = 100  # sur incident 101105-01082019 => vs 2
-    return inc
-
-@pytest.fixture
-def mob():
-    mob = pd.read_csv(os.path.join(data_loc_tests, "test_clean_data_add_features_mob.csv"), index_col=0)
-    # Création 2 NaN pour test ultérieur fonction missing_deployed_from_station
-    mob[['DeployedFromStation_Name','DeployedFromStation_Code' ]].iloc[0] == np.nan
-    return mob
+# définition des données de base
+inc, mob, station_pos, weather, holidays, traffic = extract()
+# ne garder que le mois de mai N-1 (vs date du jour) pour réaliser les tests
+test_period = '05' + str(datetime.now().year - 1)
+inc = inc[inc['IncidentNumber'].apply(lambda x: x[-6:]) == test_period]
+mob = mob[mob['IncidentNumber'].apply(lambda x: x[-6:]) == test_period]
 
 
 # Création des fixtures des étapes de nettoyage et enrichissement des données
 
 @pytest.fixture
-def inc_convert_gps(inc):
+def inc_convert_gps(inc=inc):
     return convert_gps(inc)
 
 @pytest.fixture
-def mob_create_appliance(mob):
+def mob_create_appliance(mob=mob):
     return create_appliance(mob)
 
 @pytest.fixture
@@ -139,8 +102,8 @@ def df_incident_type_category(df_create_mobilised_rank):
     return incident_type_category(df_create_mobilised_rank)
 
 @pytest.fixture
-def df_distance_calc(df_incident_type_category, station_pos):
-    return distance_calc(data= df_incident_type_category, station_pos= station_pos)
+def df_distance_calc(df_incident_type_category, station_pos=station_pos):
+    return distance_calc(data= df_incident_type_category, station_pos=station_pos)
 
 @pytest.fixture
 def df_total_pumps_out(df_distance_calc):
@@ -167,14 +130,14 @@ def df_datetime_variables(df_speed_over_60):
     return datetime_variables(df_speed_over_60)
 
 @pytest.fixture
-def df_add_weather(df_datetime_variables, weather):
-    return add_weather(df_datetime_variables, weather)
+def df_add_weather(df_datetime_variables, weather=weather):
+    return add_weather(df_datetime_variables, weather=weather)
 
 @pytest.fixture
-def df_add_holidays(df_add_weather, holidays):
-    return add_holidays(df_add_weather, holidays)
+def df_add_holidays(df_add_weather, holidays=holidays):
+    return add_holidays(df_add_weather, holidays=holidays)
 
 @pytest.fixture
-def df_add_traffic(df_add_holidays, traffic):
-    return add_traffic(df_add_holidays, traffic)
+def df_add_traffic(df_add_holidays, traffic=traffic):
+    return add_traffic(df_add_holidays, traffic=traffic)
 
