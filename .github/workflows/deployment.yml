@@ -48,6 +48,9 @@ jobs:
       uses: supercharge/mongodb-github-action@1.8.0
       with:
         mongodb-version: "4.2"
+    - name: Install MongoDB tools
+      run: |
+        sudo apt-get install -y mongodb-org-tools
     - name:
       run: |
         mongoimport --jsonArray --db test --collection stations --file /initMongo/dataMongo/stations.json
