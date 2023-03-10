@@ -70,8 +70,8 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1g
-          cpus: '0.1'
+          memory: 2g
+          cpus: '0.4'
     ports:
       - "8080:8080"
     environment:
