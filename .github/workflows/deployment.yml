@@ -54,9 +54,7 @@ jobs:
         sudo apt install ./mongodb-database-tools-*-100.7.0.deb
     - name:
       run: |
-        mongoimport --jsonArray --db test --collection stations --file /initMongo/dataMongo/stations.json
-        mongoimport --jsonArray --db test --collection schoolVacations --file /initMongo/dataMongo/schoolVacations.json
-        mongoimport --jsonArray --db test --collection riskStations --file /initMongo/dataMongo/riskStations.json
+        docker exec -i mongodb sh -c 'mongoimport --jsonArray --db test --collection stations' < /initMongo/dataMongo/stations.json
     - name: Set up Python 3.10
       uses: actions/setup-python@v3
       with:
@@ -83,7 +81,9 @@ jobs:
   # build-and-deploy:
   #   # needs: [test-api, test-entrainement]
   #   runs-on: ubuntu-latest
-
+  #  mongoimport --jsonArray --db test --collection stations --file /initMongo/dataMongo/stations.json
+  #       mongoimport --jsonArray --db test --collection schoolVacations --file /initMongo/dataMongo/schoolVacations.json
+  #       mongoimport --jsonArray --db test --collection riskStations --file /initMongo/dataMongo/riskStations.json
   #   steps:
   #     - name: Check out repository
   #       uses: actions/checkout@v2
