@@ -13,7 +13,7 @@ def user():
         "username": "test",
         "password": "test-password",
         "passwordConfirm": "test-password",
-        "created_at": "2021-01-01 00:00:00",
+        "created_at": "2023-03-10%2020%3A51%3A14.708002",
     }
 
 @pytest.fixture(scope="session")
