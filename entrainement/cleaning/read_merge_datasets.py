@@ -5,29 +5,16 @@ from utils.selenium import get_driver, get_download_link, get_data_tabs
 from datetime import datetime, timedelta
 import warnings
 warnings.filterwarnings("ignore")
-from selenium import webdriver
 import pandas as pd
 from selenium.webdriver.common.by import By
 import requests
 import io
-from pymongo import mongo_client
 import time
 import re
 
 def update_holidays_db():
     # connect to mongo
-    client = mongo_client.MongoClient(
-        os.environ.get('DATABASE_URL'), serverSelectionTimeoutMS=5000)
-
-    try:
-        conn = client.server_info()
-        print(f'Connected to MongoDB {conn.get("version")}')
-    except Exception:
-        print("Unable to connect to the MongoDB server.")
-
-    db = client[os.environ.get('MONGO_INITDB_DATABASE')]
-    school_vacation = db.schoolVacations
-
+    db = connect_to_mongo()
     driver = get_driver()
     # Accès à la page
     driver.get('https://publicholidays.co.uk/school-holidays/england/barking-and-dagenham/')
@@ -66,7 +53,7 @@ def update_holidays_db():
     holidays_list_df['weekday'] = holidays_list_df['date'].apply(lambda x: x.weekday())
     final_list = holidays_list_df[holidays_list_df['weekday']<5]['date']
     final_list = final_list.sort_values()
-    year_vacation = list(school_vacation.find({}, { 'year': 1 }))
+    year_vacation = list(db.schoolVacations.find({}, { 'year': 1 }))
     old_year = 0
     array = []
     for index, date_vacation in final_list.items():
@@ -74,9 +61,9 @@ def update_holidays_db():
             if date_vacation.year > old_year:
                 if len(array) > 0:
                     object = { "year": old_year, "dates": array }
-                    school_vacation.insert_one(object)
+                    db.schoolVacations.insert_one(object)
                     print("Inserted year= %s" % old_year)
-                    result = school_vacation.delete_one({"year": old_year - 4})
+                    result = db.schoolVacations.delete_one({"year": old_year - 4})
                     if (result == 1):
                         print("Deleted year= %s" % (old_year - 4))
                     array = []
@@ -244,10 +231,8 @@ def get_weather():
             api_key=api_key
 )
         r = requests.get(url)
-        print(r.content.decode('utf-8'))
         # create a dataframe with only useful data 
         df = pd.read_csv(io.StringIO(r.content.decode('utf-8')))
-        print(df.columns)
         df['date'] = pd.to_datetime(df['datetime']).dt.strftime('%Y-%m-%d %H')
         df = df[['temp', 'precip', 'cloudcover', 'visibility', 'conditions', 'icon', 'date']]
         
