@@ -11,8 +11,11 @@ load_dotenv()
 def get_driver():
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
-    # initialize driver
-    driver = webdriver.Remote(
+    if os.getenv('PYTHON_ENV') == 'testing':
+        # initialize driver
+        driver = webdriver.Chrome()
+    else:
+        driver = webdriver.Remote(
             command_executor=os.getenv('SELENIUM_HOST') + '/wd/hub',
             desired_capabilities=DesiredCapabilities.CHROME)
 
