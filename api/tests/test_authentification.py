@@ -2,6 +2,7 @@ import pytest
 
 # Define test functions for each route
 def test_register(test_client, user):
+    print(f'user register: {user}')
     response = test_client.post("/register", data=user)
     assert response.status_code == 201
 
