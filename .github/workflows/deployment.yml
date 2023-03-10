@@ -50,7 +50,7 @@ jobs:
         mongodb-version: "4.2"
     - name: Mongo import
       run: |
-        sudo apt-get update && apt-get install mongo-tools
+        sudo apt-get update && sudo apt-get install mongo-tools
         mongoimport --jsonArray --host=localhost --port=27017 --db test --collection stations --file /initMongo/dataMongo/stations.json
     # docker exec -i mongodb sh -c 'mongoimport --jsonArray --db test --collection stations' < /initMongo/dataMongo/stations.json
     - name: Set up Python 3.10
