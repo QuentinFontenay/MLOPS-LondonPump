@@ -4,7 +4,9 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.utils import ChromeType
+from webdriver_manager.core.utils import ChromeType
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 
 from dotenv import load_dotenv
 import os
@@ -12,13 +14,16 @@ import os
 load_dotenv()
 
 def get_driver():
-    options = webdriver.ChromeOptions()
-    options.add_argument("--headless")
+    print(os.getenv('PYTHON_ENV'))
     if os.getenv('PYTHON_ENV') == 'testing':
         # initialize driver
-        driver_path = ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()
-        driver = webdriver.Chrome(driver_path)
+        chrome_service = Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install())
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
     else:
+        options = webdriver.ChromeOptions()
+        options.add_argument("--headless")
         driver = webdriver.Remote(
             command_executor=os.getenv('SELENIUM_HOST') + '/wd/hub',
             desired_capabilities=DesiredCapabilities.CHROME)
