@@ -47,7 +47,7 @@ jobs:
     - name: Start MongoDB
       uses: supercharge/mongodb-github-action@1.8.0
     - name:
-      run: |_
+      run: |
         mongoimport --jsonArray --db test --collection stations --file /initMongo/dataMongo/stations.json
         mongoimport --jsonArray --db test --collection schoolVacations --file /initMongo/dataMongo/schoolVacations.json
         mongoimport --jsonArray --db test --collection riskStations --file /initMongo/dataMongo/riskStations.json
