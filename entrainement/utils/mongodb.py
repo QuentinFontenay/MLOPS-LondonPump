@@ -5,10 +5,14 @@ import os
 load_dotenv()
 
 def connect_to_mongo():
-    connexion_url = f"mongodb://{os.getenv('MONGO_LONDON_FIRE_USER')}:{os.getenv('MONGO_LONDON_FIRE_PASSWORD')}@{os.getenv('MONGO_INITDB_HOST')}/{os.getenv('MONGO_INITDB_DATABASE')}?authSource={os.getenv('MONGO_INITDB_DATABASE')}"
-    print(f'Connecting to MongoDB {connexion_url}')
-    client = mongo_client.MongoClient(connexion_url, serverSelectionTimeoutMS=5000)
-
+    if os.getenv('PYTHON_ENV') == 'production':
+        connexion_url = f"mongodb://{os.getenv('MONGO_LONDON_FIRE_USER')}:{os.getenv('MONGO_LONDON_FIRE_PASSWORD')}@{os.getenv('MONGO_INITDB_HOST')}/{os.getenv('MONGO_INITDB_DATABASE')}?authSource={os.getenv('MONGO_INITDB_DATABASE')}"
+        print(f'Connecting to MongoDB {connexion_url}')
+        client = mongo_client.MongoClient(connexion_url, serverSelectionTimeoutMS=5000)
+    else:
+        print(f'Connecting to MongoDB {os.getenv("DATABASE_URL")}')
+        client = mongo_client.MongoClient(
+            os.getenv('DATABASE_URL'), serverSelectionTimeoutMS=5000)
     try:
         conn = client.server_info()
         print(f'Connected to MongoDB {conn.get("version")}')
