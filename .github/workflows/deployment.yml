@@ -48,11 +48,7 @@ jobs:
       uses: supercharge/mongodb-github-action@1.8.0
       with:
         mongodb-version: "4.2"
-    - name: Install MongoDB tools
-      run: |
-        sudo dpkg -l mongodb-database-tools
-        sudo apt install ./mongodb-database-tools-*-100.7.0.deb
-    - name:
+    - name: Mongo import
       run: |
         docker exec -i mongodb sh -c 'mongoimport --jsonArray --db test --collection stations' < /initMongo/dataMongo/stations.json
     - name: Set up Python 3.10
