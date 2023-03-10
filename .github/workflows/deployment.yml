@@ -56,10 +56,6 @@ jobs:
       run: apt list --installed    
     - name: Removing previous chrome instances on runner 
       run: sudo apt purge google-chrome-stable
-    - name: Remove default Chromium
-      run: sudo apt purge chromium-browser 
-    - name: Install Chromium
-      run: sudo apt install -y chromium-browser
     - uses: actions/cache@v3
       id: cache
       with:
