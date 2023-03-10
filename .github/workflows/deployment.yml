@@ -9,6 +9,7 @@ jobs:
     env:
       DATABASE_URL: mongodb://localhost:27017/test?retryWrites=true&w=majority
       MONGO_INITDB_DATABASE: test
+      PYTHON_ENV: testing
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -57,7 +58,6 @@ jobs:
         mongoimport --jsonArray --host=localhost --port=27017 --db test --collection stations --file initMongo/dataMongo/stations.json
         mongoimport --jsonArray --host=localhost --port=27017 --db test --collection schoolVacations --file initMongo/dataMongo/schoolVacations.json
         mongoimport --jsonArray --host=localhost --port=27017 --db test --collection riskStations --file initMongo/dataMongo/riskStations.json
-    # docker exec -i mongodb sh -c 'mongoimport --jsonArray --db test --collection stations' < /initMongo/dataMongo/stations.json
     - name: Set up Python 3.10
       uses: actions/setup-python@v3
       with:
