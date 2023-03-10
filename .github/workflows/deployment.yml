@@ -50,7 +50,8 @@ jobs:
         mongodb-version: "4.2"
     - name: Install MongoDB tools
       run: |
-        sudo apt-get install -y mongodb-org-tools
+        sudo dpkg -l mongodb-database-tools
+        sudo apt install ./mongodb-database-tools-*-100.7.0.deb
     - name:
       run: |
         mongoimport --jsonArray --db test --collection stations --file /initMongo/dataMongo/stations.json
