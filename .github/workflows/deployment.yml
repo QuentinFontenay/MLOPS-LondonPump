@@ -52,6 +52,7 @@ jobs:
       run: |
         curl -sLO https://repo.mongodb.org/apt/ubuntu/dists/bionic/mongodb-org/5.0/multiverse/binary-amd64/mongodb-database-tools_100.5.1_amd64.deb
         sudo dpkg -i mongodb-database-tools_100.5.1_amd64.deb
+        ls -la
         mongoimport --jsonArray --host=localhost --port=27017 --db test --collection stations --file /initMongo/dataMongo/stations.json
     # docker exec -i mongodb sh -c 'mongoimport --jsonArray --db test --collection stations' < /initMongo/dataMongo/stations.json
     - name: Set up Python 3.10
