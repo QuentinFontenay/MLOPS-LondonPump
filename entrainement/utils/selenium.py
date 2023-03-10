@@ -3,6 +3,9 @@ warnings.filterwarnings("ignore")
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.utils import ChromeType
+
 from dotenv import load_dotenv
 import os
 
@@ -13,7 +16,8 @@ def get_driver():
     options.add_argument("--headless")
     if os.getenv('PYTHON_ENV') == 'testing':
         # initialize driver
-        driver = webdriver.Chrome()
+        driver_path = ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()
+        driver = webdriver.Chrome(driver_path)
     else:
         driver = webdriver.Remote(
             command_executor=os.getenv('SELENIUM_HOST') + '/wd/hub',
