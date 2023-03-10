@@ -39,7 +39,12 @@ jobs:
     env:
       DATABASE_URL: mongodb://localhost:27017/test?retryWrites=true&w=majority
       MONGO_INITDB_DATABASE: test
+      SELENIUM_HOST: http://localhost:4444
     runs-on: ubuntu-latest
+    services:
+      selenium:
+        image: selenium/standalone-chrome
+        options: --shm-size=2gb
     steps:
     - uses: actions/checkout@v3
     - name: Start MongoDB
