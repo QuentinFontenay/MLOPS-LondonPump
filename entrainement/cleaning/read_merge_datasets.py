@@ -244,7 +244,7 @@ def get_weather():
             api_key=api_key
 )
         r = requests.get(url)
-        
+        print(r.content.decode('utf-8'))
         # create a dataframe with only useful data 
         df = pd.read_csv(io.StringIO(r.content.decode('utf-8')))
         print(df.columns)
