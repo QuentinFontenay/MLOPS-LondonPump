@@ -247,6 +247,7 @@ def get_weather():
         
         # create a dataframe with only useful data 
         df = pd.read_csv(io.StringIO(r.content.decode('utf-8')))
+        print(df.columns)
         df['date'] = pd.to_datetime(df['datetime']).dt.strftime('%Y-%m-%d %H')
         df = df[['temp', 'precip', 'cloudcover', 'visibility', 'conditions', 'icon', 'date']]
         
