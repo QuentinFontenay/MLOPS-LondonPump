@@ -5,8 +5,6 @@ from fastapi.testclient import TestClient
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from utils.mongodb import connect_to_mongo
-
 @pytest.fixture(scope="session")
 def user():
     return {
@@ -39,21 +37,12 @@ def prediction():
         "congestion_rate": 0.04,
     }
 
-@pytest.fixture(scope="session")
-def historique_prediction():
-    return {
-        "username": "test",
-    }
-
 @pytest.fixture(scope="session", autouse=True)
-def test_client(user, prediction, historique_prediction):
+def test_client():
     import main
     application = main.api
     with TestClient(application) as test_client:
         yield test_client
-    db = connect_to_mongo()
-    db.users.delete_one({"username": user["username"]})
-    db.predictions.delete_one({"userId": prediction["userId"]})
 
 @pytest.fixture(scope="session")
 def user_authentication_headers(test_client, user):
