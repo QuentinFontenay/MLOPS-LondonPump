@@ -9,8 +9,7 @@ def test_register(test_client, user):
 
 def test_login(test_client):
     test_client.headers["Content-Type"] = "application/x-www-form-urlencoded"
-    test_client.headers["accept"] = "application/json"
-    response = test_client.post("/login", data="grant_type=&username=test&password=test-password&scope=&client_id=&client_secret=")
+    response = test_client.post("/login", data="username=test&password=test-password")
     assert response.status_code == 200
 
 def test_get_info_user(test_client, user_authentication_headers):

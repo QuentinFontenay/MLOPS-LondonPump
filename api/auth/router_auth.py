@@ -72,5 +72,5 @@ async def create_user(payload: CreateUserSchema):
 def get_me(user_id: str = Depends(require_user)):
     """Récupération des informations de l'utilisateur connecté
     """
-    user = userResponseEntity(User.find_one({'_id': ObjectId(str(user_id))}))
+    user = userResponseEntity(db.users.find_one({'_id': ObjectId(str(user_id))}))
     return {"status": "success", "user": user}

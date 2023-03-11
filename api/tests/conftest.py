@@ -57,11 +57,9 @@ def test_client(user, prediction, historique_prediction):
 
 @pytest.fixture(scope="session")
 def user_authentication_headers(test_client, user):
-    print(user)
     data = {"username": user['username'], "password": user['password']}
     r = test_client.post("/login", data=data)
     response = r.json()
-    print(response)
     auth_token = response["access_token"]
     headers = {"Authorization": f"Bearer {auth_token}"}
 
