@@ -10,6 +10,10 @@ jobs:
       DATABASE_URL: mongodb://localhost:27017/test?retryWrites=true&w=majority
       MONGO_INITDB_DATABASE: test
       PYTHON_ENV: testing
+      ACCESS_TOKEN_EXPIRES_IN: 2000
+      REFRESH_TOKEN_EXPIRES_IN: 40
+      JWT_ALGORITHM: HS256
+      JWT_SECRET_KEY: 61dlhel2CMdDbGOIi7QDdfAbqiCDy1gj0Ezr2_N2KUg
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
