@@ -2,7 +2,6 @@ import pytest
 import os
 import sys
 from fastapi.testclient import TestClient
-from datetime import datetime
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -14,7 +13,6 @@ def user():
         "username": "test",
         "password": "test-password",
         "passwordConfirm": "test-password",
-        "created_at": "2021-01-01 00:00:00"
     }
 
 @pytest.fixture(scope="session")

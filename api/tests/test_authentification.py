@@ -3,8 +3,8 @@ import json
 # Define test functions for each route
 def test_register(test_client, user):
     print(f'user register: {user}')
-    test_client.headers["Content-Type"] = "application/json"
-    response = test_client.post("/register", data=json.dumps(user))
+    # test_client.headers["Content-Type"] = "application/json"
+    response = test_client.post("/register", data=user)
     assert response.status_code == 201
 
 def test_login(test_client):

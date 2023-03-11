@@ -48,7 +48,7 @@ def refresh_token(user_id: str = Depends(require_user)):
     return JSONResponse(status_code=status.HTTP_200_OK, content={'access_token': access_token, 'token_expiry': time_expire})
 
 @router.post("/register", response_description="Add new user", response_model=UserResponse, tags=['authentification'])
-async def create_user(payload: CreateUserSchema = Depends()):
+async def create_user(payload: CreateUserSchema):
     """Création d'un compte utilisateur
     """
     user = db.users.find_one({'username': payload.username})
