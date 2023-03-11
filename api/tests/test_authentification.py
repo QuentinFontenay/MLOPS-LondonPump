@@ -8,7 +8,7 @@ def test_register(test_client, user):
 
 def test_register_with_password_confirm_different(test_client):
     test_client.headers["Content-Type"] = "application/json"
-    response = test_client.post("/register", data=json.dumps({"username": "test", "password": "test-password", "passwordConfirm": "test-password2"}))
+    response = test_client.post("/register", data=json.dumps({"username": "test2", "password": "test-password", "passwordConfirm": "test-password2"}))
     assert response.status_code == 400
 
 def test_register_account_exist(test_client):
