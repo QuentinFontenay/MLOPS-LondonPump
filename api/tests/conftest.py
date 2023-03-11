@@ -14,7 +14,7 @@ def user():
         "username": "test",
         "password": "test-password",
         "passwordConfirm": "test-password",
-        "created_at": datetime.now(),
+        # "created_at": datetime.now(),
     }
 
 @pytest.fixture(scope="session")
