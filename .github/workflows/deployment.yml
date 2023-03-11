@@ -54,7 +54,7 @@ jobs:
         pytest --disable-warnings entrainement/tests/
     - name: Upload modele file to artifact
       uses: actions/upload-artifact@v3
-        with:
+      with:
           name: modele
           path: /data/modele/
     
