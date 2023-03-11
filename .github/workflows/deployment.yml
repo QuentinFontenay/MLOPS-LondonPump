@@ -93,7 +93,7 @@ jobs:
         pip install -r api/requirements.txt
     - name: Get modele file from azure file storage
       run: |
-        sudo mkdir /data/modele
+        sudo mkdir /home/runner/work/data/modele
         if [ ! -d "/etc/smbcredentials" ]; then
           sudo mkdir /etc/smbcredentials
         fi
@@ -102,8 +102,8 @@ jobs:
           sudo bash -c 'echo "password=${{ secrets.AZURE_FILE_STORAGE_PASSWORD }}" >> /etc/smbcredentials/londonfire.cred'
         fi
         sudo chmod 600 /etc/smbcredentials/londonfire.cred
-        sudo bash -c 'echo "//londonfire.file.core.windows.net/londonfiremodele /data/modele cifs nofail,credentials=/etc/smbcredentials/londonfire.cred,dir_mode=0777,file_mode=0777,serverino,nosharesock,actimeo=30" >> /etc/fstab'
-        sudo mount -t cifs //londonfire.file.core.windows.net/londonfiremodele /data/modele -o credentials=/etc/smbcredentials/londonfire.cred,dir_mode=0777,file_mode=0777,serverino,nosharesock,actimeo=30
+        sudo bash -c 'echo "//londonfire.file.core.windows.net/londonfiremodele /home/runner/work/data/modele cifs nofail,credentials=/etc/smbcredentials/londonfire.cred,dir_mode=0777,file_mode=0777,serverino,nosharesock,actimeo=30" >> /etc/fstab'
+        sudo mount -t cifs //londonfire.file.core.windows.net/londonfiremodele /home/runner/work/data/modele -o credentials=/etc/smbcredentials/londonfire.cred,dir_mode=0777,file_mode=0777,serverino,nosharesock,actimeo=30
     - name: Run pytest
       run: | 
         pytest --disable-warnings api/tests/
