@@ -71,6 +71,11 @@ git clone
 
 fichier .env + son contenu
 
+les droits sur dossiers particuliers ?
+
+* airflow/logs
+* data/modele
+
 docker-compose build
 
 docker-compose run
