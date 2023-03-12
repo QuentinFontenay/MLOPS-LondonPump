@@ -94,6 +94,7 @@ jobs:
     - name: Run pytest
       run: | 
         pytest --disable-warnings api/tests/
+
   build-and-deploy:
     needs: [test-api, test-entrainement]
     runs-on: ubuntu-latest
