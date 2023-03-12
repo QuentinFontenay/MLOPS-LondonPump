@@ -97,7 +97,7 @@ jobs:
   build-and-deploy:
     needs: [test-api, test-entrainement]
     runs-on: ubuntu-latest
-   mongoimport --jsonArray --db test --collection stations --file /initMongo/dataMongo/stations.json
+        mongoimport --jsonArray --db test --collection stations --file /initMongo/dataMongo/stations.json
         mongoimport --jsonArray --db test --collection schoolVacations --file /initMongo/dataMongo/schoolVacations.json
         mongoimport --jsonArray --db test --collection riskStations --file /initMongo/dataMongo/riskStations.json
     steps:
