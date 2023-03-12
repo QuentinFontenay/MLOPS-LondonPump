@@ -17,7 +17,7 @@ Pour la poursuite de ce projet dans un contexte MLOps (implémentation du cycle 
 L'idée ici sera :
 
   * de mettre en place une API d'estimation du temps d'arrivée sur les lieux, d'un véhicule envoyé. On peut imaginer cet outil à destination du centre recevant les appels (annonce du temps à l'interlocuteur, recherche d'autres ressources, etc...) ;
-  * d'effectuer un nouvel entrainement du modèle lorsque des données plus récentes seront dispnibles ;
+  * d'effectuer un nouvel entrainement du modèle lorsque des données plus récentes seront disponibles ;
   * et enfin de remplacer le modèle utilisé par l'API par le nouveau, s'il s'avère plus performant.
 
 A noter que lors de l'entraînement du modèle, on identifie également une liste de casernes qui présentent habituellement des temps de réponses élevés. Le modèle ne sait les prédire correctement (ces temps sont généralement sous-estimés). Cette information est ensuite intégrée à l'API, laquelle retournera donc au final les informations suivantes :
@@ -41,14 +41,14 @@ Ces données ont été complétées au cours du projet, par d'autres ressources 
 |Nature                        |Sources                                                                                                                                                |Commentaire                                                                                                                                                                       |
 |------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 |Traffic routier (taux de congestion)|[London traffic report - TomTom Traffic Index](https://www.tomtom.com/traffic-index/london-traffic/)                                                   |remplacé par [Waybackmachine - London traffic report - TomTom Traffic Index](https://web.archive.org/web/20221118182654/https://www.tomtom.com/traffic-index/london-traffic/) <sup>(1)</sup> |
-|Dates des vacances scolaires        |[Barking and Dagenham School Holidays 2023 and 2024 - PublicHolidays.co.uk](https://publicholidays.co.uk/school-holidays/england/barking-and-dagenham/)| quartier de Londres choisi arbitrairement
+|Dates des vacances scolaires        |[Barking and Dagenham School Holidays - PublicHolidays.co.uk](https://publicholidays.co.uk/school-holidays/england/barking-and-dagenham/)| quartier de Londres choisi arbitrairement
 |Données météo                       |[Weather Data & Weather API - Visual Crossing](https://www.visualcrossing.com/)                                                                        |Utilisation de l'API pour retrouver les conditions météo historiques, heure par heure <sup>(2)</sup>                                                                                             |
 
 *<u>Notes</u> :*
 
 *(1) les données relatives au traffic routier du site TomTom, exploitées dans le modèle, ont cessé d'être disponibles peu de temps avant le rendu du projet. Cela nous obligé à trouver une solution alternative ; bien évidemment, cette solution ne saurait être satisfaisante pour une mise en production réelle, mais a été retenue ici car trop de conséquences par rapport à l'échéance à tenir.*
 
-*(2) l'offre gratuite proposée par VisualCrossing n'est pas suffisant pour couvrir les besoins du projet. Toutefois, ils proposent un "Academic plan", que nous avons pu solliciter et obtenir pour cet exercice (voir conditions [ici](https://www.visualcrossing.com/resources/documentation/weather-data/academic-student-and-research-discounts-for-weather-data/)).*
+*(2) l'offre gratuite proposée par VisualCrossing n'est pas suffisante pour couvrir les besoins du projet. Toutefois, VisualCrossing propose un "Academic plan", que nous avons pu solliciter et obtenir pour cet exercice (voir conditions [ici](https://www.visualcrossing.com/resources/documentation/weather-data/academic-student-and-research-discounts-for-weather-data/)).*
 
 
 # Les outils mis en oeuvre
@@ -61,7 +61,7 @@ A COMPLÉTER
 
 # Schéma d'implantation
 
-![schéma définitif](/home/gjavey/Documents/Travail/2021_Congé_reclassement/Projet_data_science/Formations_projet/04_MLOps_formation/Projet_MLOps/Diagramme_projet.drawio.png)
+![schéma définitif](lien/vers/Diagramme_projet.drawio.png)
 
 # Démo en local
 
@@ -79,6 +79,10 @@ les droits sur dossiers particuliers ?
 docker-compose build
 
 docker-compose run
+
+l'API
+
+Airflow
 
 # Autre ?
 
