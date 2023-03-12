@@ -62,26 +62,7 @@ services:
       - SE_NODE_OVERRIDE_MAX_SESSIONS=true
       - SE_VNC_NO_PASSWORD=1
     networks:
-      - stack
-  
-  airflow:
-    image : londonfire.azurecr.io/airflow-londonfire:latest
-    env_file: ./.env.production
-    deploy:
-      resources:
-        limits:
-          memory: 2g
-          cpus: '0.4'
-    ports:
-      - "8080:8080"
-    environment:
-      - _AIRFLOW_DB_UPGRADE=true
-      - _AIRFLOW_WWW_USER_CREATE=true
-      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=false
-    volumes:
-      - londonfiremodele:/data/modele
-    networks:
-      - stack    
+      - stack  
 
 networks:
   stack:
