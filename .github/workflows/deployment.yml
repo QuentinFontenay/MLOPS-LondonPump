@@ -2,7 +2,7 @@ name: deploy-prod
 
 on:
   push:
-    branches: [ DeployAirflowAzure ]
+    branches: [ main ]
 
 jobs:
   test-entrainement:
@@ -119,7 +119,7 @@ jobs:
         uses: Azure/get-keyvault-secrets@v1
         with: 
           keyvault: "secret-londonfire"
-          secrets: 'PythonEnv, SeleniumHost, RefreshTokenExpire, AccessTokenExpire, MongoDbLondonFireUser, MongoDbLondonFirePassword, MongoInitDbHost, MongoDbInitDatabase, MongoInitDbRootPassword, MongoInitDbRootUsername, AirflowUsername, AirflowPassword'
+          secrets: 'PythonEnv, SeleniumHost, RefreshTokenExpire, AccessTokenExpire, MongoDbLondonFireUser, MongoDbLondonFirePassword, MongoInitDbHost, MongoDbInitDatabase, MongoInitDbRootPassword, MongoInitDbRootUsername'
         id: myGetSecretAction
 
       - name: create env file
@@ -131,8 +131,6 @@ jobs:
           echo MONGO_INITDB_HOST=${{ steps.myGetSecretAction.outputs.MongoInitDbHost }} >> .env.production
           echo MONGO_LONDON_FIRE_USER=${{ steps.myGetSecretAction.outputs.MongoDbLondonFireUser }} >> .env.production
           echo MONGO_LONDON_FIRE_PASSWORD=${{ steps.myGetSecretAction.outputs.MongoDbLondonFirePassword }} >> .env.production
-          echo AIRFLOW_USERNAME=${{ steps.myGetSecretAction.outputs.AirflowUsername }} >> .env.production
-          echo AIRFLOW_PASSWORD=${{ steps.myGetSecretAction.outputs.AirflowPassword }} >> .env.production
           echo VISUAL_CROSSING_KEY=${{ secrets.VISUAL_CROSSING_KEY }} >> .env.production
           echo ACCESS_TOKEN_EXPIRES_IN=${{ steps.myGetSecretAction.outputs.AccessTokenExpire }} >> .env.production
           echo REFRESH_TOKEN_EXPIRES_IN=${{ steps.myGetSecretAction.outputs.RefreshTokenExpire }} >> .env.production
