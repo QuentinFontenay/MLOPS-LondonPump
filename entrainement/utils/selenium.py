@@ -11,7 +11,6 @@ import os
 load_dotenv()
 
 def get_driver():
-    print(os.getenv('PYTHON_ENV'))
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
     if os.getenv('PYTHON_ENV') == 'testing':
