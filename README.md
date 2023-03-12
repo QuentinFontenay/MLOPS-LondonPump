@@ -59,7 +59,7 @@ Exploitation de containers Dockers (existants sur DockerHub + créés spécifiqu
 
 A COMPLÉTER
 
-# Schéma d'implantation
+# Schéma d'implémentation
 
 ![schéma définitif](lien/vers/Diagramme_projet.drawio.png)
 
