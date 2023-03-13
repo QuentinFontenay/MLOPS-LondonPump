@@ -75,42 +75,6 @@ S'assurer d'avoir les droits en écriture sur les dossiers et leur contenu :
   * data/modele
   * airflow/logs
 
-### Paramétrer l'environnement
-
-Créer fichier .env.production à la racine du projet, en remplaçant les xxxxx par vos valeurs
-
->`MONGO_INITDB_ROOT_USERNAME="xxxxx"`
-
->`MONGO_INITDB_ROOT_PASSWORD="xxxxx"`
-
->`MONGO_INITDB_DATABASE=london_fire`
-
->`MONGO_INITDB_HOST=mongodb:27017`
-
->`MONGO_LONDON_FIRE_USER="xxxxx"`
-
->`MONGO_LONDON_FIRE_PASSWORD="xxxxx"`
-
->`DATABASE_URL=mongodb://admintest:password1234@mongodb:27017/london_fire?retryWrites=true&w=majority&authSource=london_fire`
-
->`VISUAL_CROSSING_KEY=xxxxxxxxxxxxxxx`
-
->`ACCESS_TOKEN_EXPIRES_IN=12000`
-
->`REFRESH_TOKEN_EXPIRES_IN=60`
-
->`JWT_ALGORITHM=HS256`
-
->`JWT_SECRET_KEY=90c1489e9552277a271246a92595f393821544fd732f961aa954dc822def4088`
-
->`SELENIUM_HOST="http://selenium:4444"`
-
->`PYTHON_ENV=production`
-
->`AIRFLOW_USERNAME=xxxxx`
-
->`AIRFLOW_PASSWORD=xxxxx`
-
 ## Lancer le projet
 
 Lancer les 2 lignes de commandes suivantes, pour lancer la construction des images du projet, puis lancer l'ensemble des containers :
