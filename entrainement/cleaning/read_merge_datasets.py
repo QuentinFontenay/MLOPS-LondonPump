@@ -133,7 +133,10 @@ def get_traffic():
     # initialize driver
     driver = get_driver()
     driver.get('https://web.archive.org/web/20221110181646/https://www.tomtom.com/traffic-index/london-traffic/')
-    driver.find_element(By.CLASS_NAME, 'CookieBar__button--red').click()
+    try:
+        driver.find_element(By.CLASS_NAME, 'CookieBar__button--red').click()
+    except:
+        pass
     elt = driver.find_elements(By.TAG_NAME, 'li')
     congestion_data_year_3, congestion_data_year_percentages_3 = get_data_tabs(12, driver, elt, 0)
     congestion_data_year_2, congestion_data_year_percentages_2 = get_data_tabs(13, driver, elt, 1)
