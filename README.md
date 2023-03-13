@@ -63,26 +63,119 @@ A COMPLÉTER
 
 ![schéma définitif](lien/vers/Diagramme_projet.drawio.png)
 
-# Démo en local
+# Exécution en local
 
-A VOIR
+prérequis : disposer de Docker
 
-git clone
+## Télécharger et paramétrer le projet en local
 
-fichier .env + son contenu
+### Droits sur les dossiers locaux
+S'assurer d'avoir les droits en écriture sur les dossiers et leur contenu :
 
-les droits sur dossiers particuliers ?
+  * data/modele
+  * airflow/logs
 
-* airflow/logs
-* data/modele
+### Paramétrer l'environnement
 
-docker-compose build
+Créer fichier .env.production à la racine du projet, en remplaçant les xxxxx par vos valeurs
 
-docker-compose run
+>`MONGO_INITDB_ROOT_USERNAME="xxxxx"`
 
-l'API
+>`MONGO_INITDB_ROOT_PASSWORD="xxxxx"`
 
-Airflow
+>`MONGO_INITDB_DATABASE=london_fire`
+
+>`MONGO_INITDB_HOST=mongodb:27017`
+
+>`MONGO_LONDON_FIRE_USER="xxxxx"`
+
+>`MONGO_LONDON_FIRE_PASSWORD="xxxxx"`
+
+>`DATABASE_URL=mongodb://admintest:password1234@mongodb:27017/london_fire?retryWrites=true&w=majority&authSource=london_fire`
+
+>`VISUAL_CROSSING_KEY=xxxxxxxxxxxxxxx`
+
+>`ACCESS_TOKEN_EXPIRES_IN=12000`
+
+>`REFRESH_TOKEN_EXPIRES_IN=60`
+
+>`JWT_ALGORITHM=HS256`
+
+>`JWT_SECRET_KEY=90c1489e9552277a271246a92595f393821544fd732f961aa954dc822def4088`
+
+>`SELENIUM_HOST="http://selenium:4444"`
+
+>`PYTHON_ENV=production`
+
+>`AIRFLOW_USERNAME=xxxxx`
+
+>`AIRFLOW_PASSWORD=xxxxx`
+
+## Lancer le projet
+
+Lancer les 2 lignes de commandes suivantes, pour lancer la construction des images du projet, puis lancer l'ensemble des containers :
+
+>`docker-compose build`
+
+>`docker-compose --env-file ./.env.production up`
+
+S'assurer que les 5 containers du projet fonctionnent :
+>`docker container ls`
+
+Le projet lancera alors :
+
+  * l'entrainement tous les 15 du mois à 2h ;
+  * le DAG airflow (archivage et sélection du modèle) tous les 16 du mois à 00h.
+
+## Tester manuellement le projet exécuté en local
+
+### Utiliser l'API
+
+Dans le navigateur, se rendre à l'adresse :
+
+> `localhost:8000/docs`
+
+Créer un utilisateur en utilisant l'endpoint :
+
+> POST /register
+
+Se connecter avec cet utilisateur :
+
+> bouton Authorize
+
+Faire une prédiction du temps d'intervention avec l'endpoint :
+
+> POST /predict/time_pump
+
+
+### Lancer manuellement un entrainement, puis un choix de meilleur modèle (via Airflow)
+
+Se rendre dans le container de l'entrainement :
+
+>`docker container exec -it mlops-londonpump_entrainement_model_1 /bin/sh`
+
+Dans ce container, lancer le script d'entraînement (compter <u>environ 1 heure</u> pour cette étape) :
+
+>`python /entrainement/train_predict_time.py`
+
+Quand l'entrainement est terminé, Airflow dispose des fichiers nécessaires à son exécution, on peut donc lancer le DAG d'archivage et choix du modèle :
+
+Dans le navigateur, ouvrir l'interface d'Airflow :
+
+>`localhost:8080`
+
+Renseigner les identifiant + mot de passe définis dans le fichier .env.production
+
+Lancer le DAG : le nouveau modèle est archivé, et s'il est meilleur que le modèle passé, il se substitue à celui utilisé par l'API.
+
+
+## Arrêter le projet
+
+Commande :
+>`docker-compose down`
+
+
+
 
 # Autre ?
 
