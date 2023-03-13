@@ -61,7 +61,7 @@ A COMPLÉTER
 
 # Schéma d'implémentation
 
-![schéma définitif](lien/vers/Diagramme_projet.drawio.png)
+![schéma définitif](https://zupimages.net/viewer.php?id=23/11/vmd6.png)
 
 # Exécution en local
 
@@ -133,13 +133,31 @@ Renseigner les identifiant + mot de passe définis dans le fichier .env.producti
 Lancer le DAG : le nouveau modèle est archivé, et s'il est meilleur que le modèle passé, il se substitue à celui utilisé par l'API.
 
 
-## Arrêter le projet
+# Exécution en production
 
-Commande :
->`docker-compose down`
+Cette partie fournit des instructions sur la façon de déployer un projet Docker sur les différents services Azure. Les services Azure utilisés pour le déploiement de ce projet sont :
 
+- Azure Container Registry (ACR)
+- Azure Key Vault
+- Azure Container instances
+- Azure File Share
 
+## Prérequis
 
+Avant de commencer, vous devez avoir les éléments suivants :
 
-# Autre ?
+- Un compte Azure actif
+- Docker installé sur votre machine locale
 
+## Configuration du Azure Container Registry (ACR)
+
+Ce service permet de stocker et de gérer les images Docker comme l'outil Docker Hub. Vous devez en créer un sur votre compte Azure afin de stocker les images de vos différents conteneurs.
+
+## Configuration du Azure File Share
+
+- Créez un partage de fichiers ayant pour nom londonfire qui contiendra les fichiers liés à la bdd MongoDB
+- Créez un partage de fichiers ayant pour nom londonfiremodele qui contiendra les fichiers liés aux modèles
+
+## Configuration du Key vault
+
+Ce service contiendra les différentes variables d'environnements utilisés dans le projet. Vous devez vous rendre dans la section Secrets du Azure Key Vault afin de pouvoir les déclarées.
