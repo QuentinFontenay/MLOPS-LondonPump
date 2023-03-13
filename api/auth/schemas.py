@@ -2,8 +2,8 @@ from pydantic import BaseModel, Field, constr
 from datetime import datetime
 
 class UserModelSchema(BaseModel):
-    username: str = Field(...)
-    created_at: datetime = Field(default=str(datetime.now()))
+    username: str
+    created_at: datetime = datetime.now()
 
     class Config:
         orm_mode = True
@@ -18,8 +18,8 @@ class UserModelSchema(BaseModel):
         # }
 
 class CreateUserSchema(UserModelSchema):
-    password: constr(min_length=6) = Field(...)
-    passwordConfirm: str = Field(...)
+    password: constr(min_length=6)
+    passwordConfirm: str
 
 class UserResponseSchema(UserModelSchema):
     id: str

@@ -11,3 +11,4 @@ scipy
 python-dotenv
 requests
 pytest
+chromedriver-autoinstaller

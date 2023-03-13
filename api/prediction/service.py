@@ -1,6 +1,5 @@
 from joblib import load
 import pandas as pd
-from utils.mongodb import RiskStations
 from utils.helpers import path_file
 
 def load_file():
