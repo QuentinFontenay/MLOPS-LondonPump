@@ -37,7 +37,6 @@ Le coeur du projet repose sur des données accessibles sur le [London Datastore]
 
 Ces données ont été complétées au cours du projet, par d'autres ressources concernant la ville de Londres :
 
-
 |Nature                        |Sources                                                                                                                                                |Commentaire                                                                                                                                                                       |
 |------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 |Traffic routier (taux de congestion)|[London traffic report - TomTom Traffic Index](https://www.tomtom.com/traffic-index/london-traffic/)                                                   |remplacé par [Waybackmachine - London traffic report - TomTom Traffic Index](https://web.archive.org/web/20221118182654/https://www.tomtom.com/traffic-index/london-traffic/) <sup>(1)</sup> |
@@ -53,15 +52,19 @@ Ces données ont été complétées au cours du projet, par d'autres ressources 
 
 # Les outils mis en oeuvre
 
-Langage Python
+- Langage Python
 
-Exploitation de containers Dockers (existants sur DockerHub + créés spécifiquement pour le projet).
+- Exploitation de containers Dockers (existants sur DockerHub + créés spécifiquement pour le projet).
 
-A COMPLÉTER
+- Mise en place de test unitaires sur la partie entraînement et la partie API
+
+- Mise en place d'un workflow Github
+
+- Déploiement de la solution sur les différents services Azure
 
 # Schéma d'implémentation
 
-![schéma définitif](https://zupimages.net/viewer.php?id=23/11/vmd6.png)
+![schéma définitif](https://user-images.githubusercontent.com/36076581/224916866-da3f7d50-31ed-43de-9617-790b5bc67583.png)
 
 # Exécution en local
 
@@ -142,12 +145,18 @@ Cette partie fournit des instructions sur la façon de déployer un projet Docke
 - Azure Container instances
 - Azure File Share
 
+## Schéma de déploiement
+
+![Schéma de déploiement](https://user-images.githubusercontent.com/36076581/224921686-93169f28-6b1f-4c4b-b03a-730e739913f4.png)
+
+
 ## Prérequis
 
 Avant de commencer, vous devez avoir les éléments suivants :
 
 - Un compte Azure actif
 - Docker installé sur votre machine locale
+- Un répertoire Github où vous possédez les droits
 
 ## Configuration du Azure Container Registry (ACR)
 
@@ -160,4 +169,29 @@ Ce service permet de stocker et de gérer les images Docker comme l'outil Docker
 
 ## Configuration du Key vault
 
-Ce service contiendra les différentes variables d'environnements utilisés dans le projet. Vous devez vous rendre dans la section Secrets du Azure Key Vault afin de pouvoir les déclarées.
+Ce service contiendra les différentes variables d'environnements utilisés dans le projet. Vous devez vous rendre dans la section Secrets du Azure Key Vault afin de pouvoir les déclarées. Vous pouvez retrouvé les différentes variables à déclarer dans le fichier .env
+
+## Création variables d'environnements
+
+Plusieurs variables d'environnements ont été crée sur Github afin qu'elle puisse être utilisé lors du workflow:
+```
+AZURE_CREDENTIALS = Le json d'authentification que vous pouvez récupéré à l'aide de azure cli
+JWT_ALGORITHM = Algorithme qui sera utilisé pour la clé de signature du Bearer token
+JWT_SECRET_KEY = La clé de signature en fonction de l'algorithme que vous avez choisis
+REGISTRY_LOGIN_SERVER = Url de votre registre d'images
+REGISTRY_PASSWORD = Le mot de passe lié au registre
+REGISTRY_TENANT_ID = L'id qui correpond à votre registre
+REGISTRY_USERNAME = L'utilisateur lié au registre
+RESOURCE_GROUP = Le nom de la ressource que vous avez crée qui contient vos différents services Azure
+SUBSCRIPTION_ID = L'id qui est lié à votre compte et à la ressource
+
+```
+
+## Exécution du déploiement
+
+Le déploiement s'effectue automatiquement à la suite d'un push sur main ou d'un merge sur main. Le workflow sera alors déclenché et vous n'aurez plus qu'a attendre qu'il se termine. Pour ce faire:
+- Cloner ce répertoire `git clone https://github.com/QuentinFontenay/MLOPS-LondonPump.git`
+- Créer un nouveau répertoire sur Github
+- Initialiser ce répertoire dans le dossier du projet
+- Réaliser toutes les étapes décrites précédemment
+- Effectuer un push sur main
