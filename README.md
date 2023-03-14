@@ -195,3 +195,5 @@ Le déploiement s'effectue automatiquement à la suite d'un push sur main ou d'u
 - Initialiser ce répertoire dans le dossier du projet
 - Réaliser toutes les étapes décrites précédemment
 - Effectuer un push sur main
+
+Pour déployer l'application Airflow, vous devez crée une Web App sur votre portail Azure et configurer son déploiement à l'aide de l'image Docker que vous avez au préalable envoyée sur le repository Azure
