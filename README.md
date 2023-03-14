@@ -68,26 +68,64 @@ Ces données ont été complétées au cours du projet, par d'autres ressources 
 
 # Exécution en local
 
-prérequis : disposer de Docker
+<u>Prérequis</u> : 
+- Docker installé sur votre machine locale
+- Avoir souscrit à une offre permettant l'utilisation de l'API de [VisualCrossing](https://www.visualcrossing.com/).
+
+<u>Note pour l'API VisualCrossing</u> :
+- <u>l'offre gratuite n'est pas suffisante pour réaliser un nouvel entraînement sur ce projet</u> (il faut être en mesure de récupérer jusqu'à 35040 enregistrements) ;
+- en revanche, l'offre gratuite ne gênera en rien pour l'utilisation de l'API de prédiction du projet (avec le dernier meilleur modèle déjà sélectionné).
 
 ## Télécharger et paramétrer le projet en local
 
+Cloner ce répertoire `git clone https://github.com/QuentinFontenay/MLOPS-LondonPump.git`
+
 ### Droits sur les dossiers locaux
-S'assurer d'avoir les droits en écriture sur les dossiers et leur contenu :
+S'assurer d'avoir les droits en écriture sur les dossiers suivants, ainsi que leur contenu :
 
   * data/modele
   * airflow/logs
 
+### Editer le fichier d'environnement fourni à la racine du projet
+
+Modifier le fichier `.env` pour avoir les valeurs ci-dessous ; penser à reporter votre clé pour l'API VisualCrossing (VISUAL_CROSSING_KEY).
+
+```
+MONGO_INITDB_ROOT_USERNAME="admin"
+MONGO_INITDB_ROOT_PASSWORD="password123"
+MONGO_INITDB_DATABASE=london_fire
+MONGO_INITDB_HOST=mongodb:27017
+MONGO_LONDON_FIRE_USER="admintest"
+MONGO_LONDON_FIRE_PASSWORD="password1234"
+DATABASE_URL=mongodb://admintest:password1234@mongodb:27017/london_fire?authSource=london_fire
+
+VISUAL_CROSSING_KEY=VOTRE_CLÉ_API_VISUAL_CROSSING
+
+ACCESS_TOKEN_EXPIRES_IN=12000
+REFRESH_TOKEN_EXPIRES_IN=60
+JWT_ALGORITHM=HS256
+JWT_SECRET_KEY=lO5e5svH8EHaCvslIQFn3ifq_bmQcud8AEWE_vaopzE
+
+SELENIUM_HOST="http://selenium:4444"
+PYTHON_ENV=production
+
+AIRFLOW_USERNAME=airflow
+AIRFLOW_PASSWORD=airflow
+```
+
 ## Lancer le projet
 
-Lancer les 2 lignes de commandes suivantes, pour lancer la construction des images du projet, puis lancer l'ensemble des containers :
+Par les 2 lignes de commandes suivantes, lancer la construction des images du projet, puis lancer l'ensemble des containers :
 
->`docker-compose build`
-
->`docker-compose --env-file ./.env.production up`
+```
+docker-compose build
+docker-compose --env-file ./.env up
+```
 
 S'assurer que les 5 containers du projet fonctionnent :
->`docker container ls`
+```
+docker container ls
+```
 
 Le projet lancera alors :
 
@@ -118,12 +156,14 @@ Faire une prédiction du temps d'intervention avec l'endpoint :
 ### Lancer manuellement un entrainement, puis un choix de meilleur modèle (via Airflow)
 
 Se rendre dans le container de l'entrainement :
-
->`docker container exec -it mlops-londonpump_entrainement_model_1 /bin/sh`
+```
+docker container exec -it mlops-londonpump_entrainement_model_1 /bin/sh
+```
 
 Dans ce container, lancer le script d'entraînement (compter <u>environ 1 heure</u> pour cette étape) :
-
->`python /entrainement/train_predict_time.py`
+```
+python /entrainement/train_predict_time.py
+```
 
 Quand l'entrainement est terminé, Airflow dispose des fichiers nécessaires à son exécution, on peut donc lancer le DAG d'archivage et choix du modèle :
 
@@ -131,10 +171,15 @@ Dans le navigateur, ouvrir l'interface d'Airflow :
 
 >`localhost:8080`
 
-Renseigner les identifiant + mot de passe définis dans le fichier .env.production
+Renseigner les identifiant et mot de passe définis dans le fichier .env (variables AIRFLOW_USERNAME et AIRFLOW_PASSWORD).
 
-Lancer le DAG : le nouveau modèle est archivé, et s'il est meilleur que le modèle passé, il se substitue à celui utilisé par l'API.
+Déclencher manuellement le DAG : le nouveau modèle est archivé, et s'il est meilleur que le modèle passé, il se substitue à celui utilisé par l'API.
 
+## Quitter le projet
+Fermer et supprimer les containers :
+```
+docker-compose down
+```
 
 # Exécution en production
 
