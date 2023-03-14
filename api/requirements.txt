@@ -1,0 +1,14 @@
+uvicorn
+fastapi
+python-multipart
+pandas
+pymongo
+pytest
+httpx
+scikit-learn
+joblib==1.1.0
+mongomock
+mongoengine
+passlib[bcrypt]
+python-jose[cryptography]
+pydantic[dotenv]
